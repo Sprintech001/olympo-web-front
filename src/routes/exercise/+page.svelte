@@ -14,7 +14,7 @@
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start gap-4 bg-[#2c2c2c]">
-    <div class="w-full h-60 flex items-start justify-between p-4 rounded-xl bg-[url('src/images/exe.png')] bg-cover bg-top">
+    <div id="hero" class="w-full h-60 flex items-start justify-between p-4 rounded-xl bg-cover bg-top">
         <a href="/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> <IconChevronLeft color="#facc15"/> </a>
         <img src={OlympoYellow} alt="Logo Olympo" class="w-8 h-8 rounded-full" />
     </div>
@@ -37,3 +37,9 @@
         </div>
     </main>
 </section>
+
+<style>
+    #hero {
+        background-image: url('../../images/exe.png');
+    }
+</style>

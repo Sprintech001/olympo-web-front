@@ -93,11 +93,11 @@
                 <a href="/">Ver Todos</a>
             </div>
             <div class="w-full flex flex-col gap-4">
-                <a href="/exercise" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-[url('src/images/exe.png')] bg-cover bg-top">
+                <a id="exe" href="/exercise" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
                     <h2 class="text-5xl">Rosca Concentrada</h2>
                     <h3 class="text-2xl lowercase">3x12 repetições</h3>
                 </a>
-                <a href="/exerciseAgachamento" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-[url('src/images/exe2.png')] bg-cover bg-top">
+                <a id="exe2" href="/exerciseAgachamento" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
                     <h2 class="text-5xl">Agachamento Terra</h2>
                     <h3 class="text-2xl lowercase">10 minutos</h3>
                 </a>
@@ -105,3 +105,13 @@
         </div>
     </main>
 </section>
+
+<style>
+    #exe {
+        background-image: url('../../images/exe.png');
+    }
+
+    #exe2 {
+        background-image: url('../../images/exe2.png');
+    }
+</style>
