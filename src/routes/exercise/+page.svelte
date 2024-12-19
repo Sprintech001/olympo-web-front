@@ -1,6 +1,5 @@
 <script>
     import OlympoYellow from "../../images/olympo-yellow.png";
-    import Avatar from '../../images/avatar.jpg'
     import {
     IconBarbell,
     IconChevronLeft,
