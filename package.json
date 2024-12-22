@@ -19,9 +19,9 @@
 	},
 	"dependencies": {
 		"@tabler/icons-svelte": "^3.26.0",
-		"layerchart": "^0.60.0"
+		"layerchart": "^0.60.2"
 	},
 	"engines": {
-  		"node": "18.x || 20.x"
+		"node": "18.x || 20.x"
 	}
 }

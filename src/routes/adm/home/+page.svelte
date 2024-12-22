@@ -92,8 +92,6 @@
                 <h2 class="text-2xl">Exercícios Diarios</h2>
                 <a href="/">Ver Todos</a>
             </div>
-
-            <!-- Mecher aqui -->
             <div class="w-full flex flex-col gap-4">
                 <a id="exe" href="/exercise" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
                     <h2 class="text-5xl">Rosca Concentrada</h2>
