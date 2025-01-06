@@ -9,6 +9,8 @@
     } from "@tabler/icons-svelte";
     import { IconLock } from "@tabler/icons-svelte";
     import { BarChart, Svg, Axis, Bars } from "layerchart";
+    import { onMount } from 'svelte';
+    import ExerciseCard from "$lib/ExerciseCard.svelte";
 
     let data = [
         {
@@ -42,6 +44,26 @@
             baseline: 86,
         },
     ];
+
+    let exercises = [];
+    let error = null;
+
+    async function fetchExercises() {
+        try {
+        const response = await fetch('http://localhost:5217/api/exercise');
+        if (!response.ok) {
+            throw new Error(`Erro: ${response.statusText}`);
+        }
+        exercises = await response.json();
+        console.log(exercises);
+        } catch (err) {
+        error = err.message;
+        }
+    }
+
+    onMount(() => {
+        fetchExercises();
+    });
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
@@ -92,28 +114,11 @@
                 <h2 class="text-2xl">Exercícios Diarios</h2>
                 <a href="/">Ver Todos</a>
             </div>
-
-            <!-- Mecher aqui -->
             <div class="w-full flex flex-col gap-4">
-                <a id="exe" href="/exercise" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
-                    <h2 class="text-5xl">Rosca Concentrada</h2>
-                    <h3 class="text-2xl lowercase">3x12 repetições</h3>
-                </a>
-                <a id="exe2" href="/exerciseAgachamento" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
-                    <h2 class="text-5xl">Agachamento Terra</h2>
-                    <h3 class="text-2xl lowercase">10 minutos</h3>
-                </a>
+                {#each exercises as exercise (exercise.id)}
+                    <ExerciseCard {exercise} />
+                {/each}
             </div>
         </div>
     </main>
 </section>
-
-<style>
-    #exe {
-        background-image: url('../../images/exe.png');
-    }
-
-    #exe2 {
-        background-image: url('../../images/exe2.png');
-    }
-</style>

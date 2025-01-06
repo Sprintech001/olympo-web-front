@@ -15,7 +15,7 @@
     import { IconLock } from "@tabler/icons-svelte";
     import { BarChart, Svg, Axis, Bars } from "layerchart";
     import { onMount } from 'svelte';
-    import { selectedExerciseId } from './storelinks.ts';
+    import { selectedExerciseId } from '../../../lib/storelinks.ts';
 
     let exercises = [];
     let error = null;
