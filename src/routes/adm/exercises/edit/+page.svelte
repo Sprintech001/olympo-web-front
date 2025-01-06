@@ -45,6 +45,10 @@
         const files = event.target.files;
         if (files && files.length > 0) {
             videoPath = files[0]; 
+            const videoPreview = document.getElementById('videoPreview');
+            const videoURL = URL.createObjectURL(videoPath);
+            videoPreview.src = videoURL;
+            videoPreview.load();
             console.log('Vídeo selecionado:', videoPath);
         }
     }
@@ -159,7 +163,7 @@
                 >
             </div>
 
-            <video width="320" height="240" controls>
+            <video id="videoPreview" width="320" height="240" controls>
                 {#if exercise.videoPath}
                     <source src={`${serverUrl}/api/Files/${exercise.videoPath}`} />
                 {/if}
