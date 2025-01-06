@@ -21,14 +21,14 @@
 
     <main class="w-full flex flex-col gap-8 py-4 px-8">
         <div id="texts" class="w-full flex flex-col items-center justify-center gap-4 text-white">
-            <h2 class="text-3xl font-karantina uppercase">Agachamento Terra</h2>
-            <p class="">Use pegada pronada, ou seja, com as palmas da mão voltadas para o corpo para segurar a barra e fique com os joelhos flexionados, na posição de agachamento. A coluna deve estar ereta e alinhada nesse momento e as pernas abertas, com os pés apontados para fora</p>
+            <h2 class="text-3xl font-karantina uppercase">Rosca Concentrada</h2>
+            <p class="">Sente-se em um banco e incline-se mantendo o peito erguido, faça a flexão do ombro levantando o halter até o ombro, pausa por um segundo no topo e estenda lentamento o braço.</p>
         </div>
 
         <div id="info" class="w-full flex flex-wrap itmes-center justify-between text-white text-md">
             <div class="flex justify-between items-center gap-2">
-                <IconClock color="#facc15" size="32"/>
-                <span class="leading-5">Duração <br><strong>10 minutos</strong></span>
+                <IconBarbell color="#facc15" size="32"/>
+                <span class="leading-5">Repetiçẽs <br><strong>3x12</strong></span>
             </div>
             <div class="flex justify-between items-center gap-2">
                 <IconFlame color="#facc15" size="32"/>
@@ -40,6 +40,6 @@
 
 <style>
     #hero {
-        background-image: url('../../images/exe2.png');
+        background-image: url('../../../images/exe.png');
     }
 </style>

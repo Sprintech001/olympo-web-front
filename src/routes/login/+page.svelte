@@ -24,6 +24,6 @@
         <a href="/" class="text-yellow-400 font-semibold">Recuperar senha</a>
     </form>
     <div class="w-full flex flex-col pb-16">
-        <a href="/home" class="px-4 py-3 bg-yellow-400 font-karantina w-full rounded-full tracking-wider text-3xl text-center">ENTRAR</a>
+        <a href="/adm/home" class="px-4 py-3 bg-yellow-400 font-karantina w-full rounded-full tracking-wider text-3xl text-center">ENTRAR</a>
     </div>
 </section>
