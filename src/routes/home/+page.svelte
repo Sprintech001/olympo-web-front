@@ -48,6 +48,8 @@
     let exercises = [];
     let error = null;
 
+    console.log(exercises);
+
     async function fetchExercises() {
         try {
         const response = await fetch('http://localhost:5217/api/exercise');
@@ -55,7 +57,6 @@
             throw new Error(`Erro: ${response.statusText}`);
         }
         exercises = await response.json();
-        console.log(exercises);
         } catch (err) {
         error = err.message;
         }
