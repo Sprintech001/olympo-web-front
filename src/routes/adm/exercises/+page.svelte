@@ -41,7 +41,7 @@
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
     <div id="head" class="w-full">
         <div class="w-full flex justify-between">
-            <a href="/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> <IconChevronLeft color="#facc15"/> </a>
+            <a href="/adm/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> <IconChevronLeft color="#facc15"/> </a>
         </div>
     </div>
 

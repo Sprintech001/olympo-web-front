@@ -46,7 +46,7 @@
 
         <div id="exercicios" class="w-full flex flex-col gap-4 text-white">
             <div class="bg-[#D9D9D9] bg-opacity-10 p-4 rounded-xl">
-                <a href="#" class="text-2xl">Ver alunos</a>
+                <a href="/adm/alunos" class="text-2xl">Ver alunos</a>
             </div>
             <div class="bg-[#D9D9D9] bg-opacity-10 p-4 rounded-xl">
                 <a href="/adm/exercises" class="text-2xl">Exercicios salvos</a>

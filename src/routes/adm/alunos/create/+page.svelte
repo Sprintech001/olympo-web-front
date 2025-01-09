@@ -2,7 +2,7 @@
     import { IconChevronLeft, IconInputCheck } from "@tabler/icons-svelte";
     import { onMount } from 'svelte';
 
-    let exercises = [];
+    let alunos = [];
     let error = null;
     let name = '';
     let description = '';
@@ -21,41 +21,41 @@
         }
 
         try {
-            const response = await fetch('http://localhost:5217/api/exercise', {
+            const response = await fetch('http://localhost:5217/api/aluno', {
                 method: 'POST',
                 body: formData,
             });
 
             if (response.ok) {
                 const result = await response.json();
-                message = 'Exercício criado com sucesso!';
+                message = 'aluno criado com sucesso!';
                 console.log(result);
                 setInterval(() => {
-                    window.location.href = '/adm/exercises';
+                    window.location.href = '/adm/alunos';
                 }, 500);
             } else {
-                message = 'Erro ao criar exercício.';
+                message = 'Erro ao criar aluno.';
             }
         } catch (error) {
             message = 'Erro de requisição: ' + error.message;
         }
     };
 
-    async function fetchExercises() {
+    async function fetchAlunos() {
         try {
-            const response = await fetch('http://localhost:5217/api/exercise');
+            const response = await fetch('http://localhost:5217/api/aluno');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
-            exercises = await response.json();
-            console.log(exercises);
+            alunos = await response.json();
+            console.log(alunos);
         } catch (err) {
             error = err.message;
         }
     }
 
     onMount(() => {
-        fetchExercises();
+        fetchAlunos();
     });
 </script>
 
@@ -70,17 +70,17 @@
 
     <main class="w-full flex flex-col gap-8">
         <div id="exercicios" class="w-full text-white">
-            <h2 class="text-4xl mt-4 mb-4">Criar Exercícios</h2>
+            <h2 class="text-4xl mt-4 mb-4">Adicionar Alunos</h2>
 
             <form on:submit={handleSubmit} class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
-                    <label for="name" class="text-2xl">Nome do exercício</label>
+                    <label for="name" class="text-2xl">Nome do aluno</label>
                     <input 
                         type="text" 
                         bind:value={name} 
                         id="name" 
                         class="w-full p-4 rounded-xl bg-[#2c2c2c] text-white" 
-                        placeholder="Digite o nome do exercício" 
+                        placeholder="Digite o nome do aluno" 
                         required 
                     />
                 </div>
@@ -91,7 +91,7 @@
                         bind:value={description} 
                         id="description" 
                         class="w-full p-4 rounded-xl bg-[#2c2c2c] text-white" 
-                        placeholder="Descreva o exercício" 
+                        placeholder="Descreva o aluno" 
                         rows="4" 
                         required
                     ></textarea>
