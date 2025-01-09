@@ -52,7 +52,7 @@
                 <IconChevronLeft color="#facc15" />
             </a>
         </div>
-        <img src={OlympoYellow} alt="Logo Olympo" class="w-6 h-6 rounded-full" />
+        <!-- <img src={OlympoYellow} alt="Logo Olympo" class="w-6 rounded-full" /> -->
     </div>
 
     <main class="w-full flex flex-col gap-8">
@@ -77,14 +77,14 @@
                     <h2 class="text-5xl">{aluno.name}</h2>
                 </a>
                 {/each} -->
-                <a href="/adm/alunos/edit" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-600">   
+                <a href="/adm/alunos/edit" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-700" style="background-color: #3f3f46;">   
                     <img src={avatar} alt="Avatar" class="h-9 w-9 rounded-full">
                     <div>
                         <h2 class="text-2xl">Jonh Doe</h2>
                         <span class="text-lg">Visualizar plano de treinos</span>
                     </div>
                 </a>
-                <a href="/adm/alunos/edit" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-600">   
+                <a href="/adm/alunos/edit" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-700" style="background-color: #3f3f46;">   
                     <img src={avatar} alt="Avatar" class="h-9 w-9 rounded-full">
                     <div>
                         <h2 class="text-2xl">Jonh Doe</h2>
