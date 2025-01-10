@@ -1,5 +1,5 @@
 <script>
-    import { selectedExerciseId } from './storelinks.ts';
+    import { selectedExerciseId } from './storelinks.js';
     export let exercise = {};
 </script>
 
