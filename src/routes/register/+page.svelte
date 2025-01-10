@@ -49,7 +49,7 @@
 <section class="w-full min-h-dvh flex flex-col items-start px-8 gap-8 bg-[#2c2c2c]">
     <div class="w-full flex py-8 justify-between">
         <img src={OlympoYellow} alt="Logo Olympo" class="max-w-16">
-        <a href="/register" class="text-yellow-400 font-semibold mt-5 mr-3">Entrar</a>
+        <a href="/login" class="text-yellow-400 font-semibold mt-5 mr-3">Entrar</a>
     </div>
     <div id="titles">
         <h2 class="text-3xl text-yellow-400 font-extrabold">Registro</h2>
@@ -88,7 +88,4 @@
             </button>
         </div>
     </form>
-    {#if message}
-        <p class="text-white mt-4">{message}</p>
-    {/if}
 </section>
