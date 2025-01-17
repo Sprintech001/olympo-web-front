@@ -6,7 +6,7 @@
         IconFlame,
     } from "@tabler/icons-svelte";
     import { onMount } from "svelte";
-    import { selectedExerciseId } from '../../../../lib/storelinks.js';
+    import { selectedExerciseId } from '../../../../services/storelinks.js';
 
     let exercises = [];
     let exercise = { id: null, name: '', description: '', imagePath: '', videoPath: "" }; 
@@ -163,14 +163,14 @@
                 >
             </div>
 
-            <video id="videoPreview" width="320" height="240" controls>
+            <!-- <video id="videoPreview" width="320" height="240" controls>
                 {#if exercise.videoPath}
                     <source src={`${serverUrl}/api/Files/${exercise.videoPath}`} />
                 {/if}
                 <track kind="captions" src="path/to/captions.vtt" srclang="en" label="English">
                 Seu navegador não suporta o elemento de vídeo.
             </video>
-            <p>{serverUrl}/api/Files/{exercise.videoPath}</p>
+            <p>{serverUrl}/api/Files/{exercise.videoPath}</p> -->
     
             <div id="info" class="w-full flex flex-wrap items-center justify-between text-white text-md mt-10">
                 <div class="flex justify-between items-center gap-2">

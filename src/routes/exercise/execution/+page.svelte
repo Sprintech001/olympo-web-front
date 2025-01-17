@@ -14,14 +14,14 @@
     } from "@tabler/icons-svelte";
     import { IconLock } from "@tabler/icons-svelte";
     import { onMount } from "svelte";
-    import { exercisesStore } from "../../../lib/exercisesStore"; 
+    import { exercisesStore } from "../../../services/exercisesStore"; 
 
     let video;
     let currentTime = 0;
     let isPaused = true;
     let timer = 60; 
     let interval;
-    let exerciseName = "Nome do Exercício";
+    let exerciseName = "Rosca Concentrada";
 
     function togglePlayPause() {
         if (video && video.paused) {
@@ -92,7 +92,7 @@
         </div>
     </div>
     <video id="videoPreview" width="320" height="240" controls>
-        <source src="http://localhost:5217/api/Files/videos/execucao.mp4" />
+        <source src="http://localhost:5217/api/Files/videos/execution2.mp4" />
         <track
             kind="captions"
             src="path/to/captions.vtt"

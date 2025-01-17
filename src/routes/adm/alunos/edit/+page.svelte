@@ -6,7 +6,7 @@
         IconFlame,
     } from "@tabler/icons-svelte";
     import { onMount } from "svelte";
-    import { selectedExerciseId } from '../../../../lib/storelinks.js';
+    import { selectedExerciseId } from '../../../../services/storelinks.js';
 
     let exercises = [];
     let exercise = { id: null, name: '', description: '', imagePath: '', videoPath: "" }; 

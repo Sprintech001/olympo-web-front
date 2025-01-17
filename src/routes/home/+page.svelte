@@ -10,7 +10,7 @@
     import { IconLock } from "@tabler/icons-svelte";
     import { BarChart, Svg, Axis, Bars } from "layerchart";
     import { onMount } from 'svelte';
-    import ExerciseCard from "$lib/ExerciseCard.svelte";
+    import ExerciseCard from "../../lib/ExerciseCard.svelte";
 
     let data = [
         {

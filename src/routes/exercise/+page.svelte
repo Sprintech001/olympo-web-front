@@ -12,7 +12,7 @@
     } from "@tabler/icons-svelte";
     import { IconLock } from "@tabler/icons-svelte";
     import { onMount } from 'svelte';
-    import { selectedExerciseId } from '../../lib/storelinks';
+    import { selectedExerciseId } from '../../services/storelinks';
 
     let exercises = [];
     let exercise = { id: null, name: '', description: '', imagePath: '', videoPath: "" }; 

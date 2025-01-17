@@ -8,6 +8,7 @@
     let password = '';
     let name = '';
     let message = '';
+    let type = '';
 
     const handleSubmit = async (event) => {
     event.preventDefault();
@@ -16,7 +17,8 @@
         email: email,
         password: password,
         name: name,
-    };
+        type: 2,
+        };
 
     try {
         const response = await fetch('http://localhost:5217/api/user', {
@@ -32,7 +34,7 @@
             message = 'Usuário criado com sucesso!';
             console.log(result);
             setTimeout(() => {
-                window.location.href = '/home';
+                window.location.href = '/login';
             }, 500);
         } else {
             const errorResponse = await response.json();

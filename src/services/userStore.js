@@ -19,4 +19,6 @@ function createUserStore() {
   };
 }
 
+console.log(localStorage.getItem('user'));
+
 export const userStore = createUserStore();
