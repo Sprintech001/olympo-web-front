@@ -9,39 +9,68 @@
     } from "@tabler/icons-svelte";
     import { IconLock } from "@tabler/icons-svelte";
     import { BarChart, Svg, Axis, Bars } from "layerchart";
+    import { onMount } from 'svelte';
+    import ExerciseCard from "../../lib/ExerciseCard.svelte";
 
     let data = [
         {
             date: new Date("December 17, 1995 03:24:00"),
             value: 59,
             baseline: 55,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 18, 1995 03:24:00"),
             value: 44,
             baseline: 64,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 19, 1995 03:24:00"),
             value: 90,
             baseline: 35,
+            color: "#facc15"
         },
         {
             date: new Date("December 20, 1995 03:24:00"),
             value: 36,
             baseline: 73,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 21, 1995 03:24:00"),
             value: 44,
             baseline: 34,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 22, 1995 03:24:00"),
             value: 55,
             baseline: 86,
+            color: "#a9a9a9"
         },
     ];
+
+    let exercises = [];
+    let error = null;
+
+    async function fetchExercises() {
+        try {
+            const response = await fetch('http://191.252.195.85:5000/api/exercise');
+            if (!response.ok) {
+                throw new Error(`Erro: ${response.statusText}`);
+            }
+            const data = await response.json();
+            exercises = data.$values || [];
+            console.log(exercises);
+        } catch (err) {
+            error = err.message;
+        }
+    }
+
+    onMount(() => {
+        fetchExercises();
+    });
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
@@ -79,11 +108,12 @@
         <div id="desempenho" class="w-full p-4 flex flex-col gap-4 bg-[#D9D9D9] bg-opacity-10 rounded-xl">
             <h2 class="text-2xl text-white">Desempenho</h2>
             <div class="h-[200px] text-white text-2xl">
-                <BarChart {data} x="date" y="value" axis="x">
-                    <!-- <Bars style="fill: #facc15;" /> -->
-                    <!-- <Axis axis="x" labelStyle="font-size: 14px; fill: #ffffff;" /> -->
-                </BarChart>
-                
+                {#if data.length > 0}
+                    <BarChart {data} x="date" y="value" axis="x">
+                        <!-- <Bars style="fill: d => d.color;" />
+                        <Axis axis="x" labelStyle="font-size: 14px; fill: #ffffff;" /> -->
+                    </BarChart>
+                {/if}
             </div>
         </div>
 
@@ -92,28 +122,13 @@
                 <h2 class="text-2xl">Exercícios Diarios</h2>
                 <a href="/">Ver Todos</a>
             </div>
-
-            <!-- Mecher aqui -->
             <div class="w-full flex flex-col gap-4">
-                <a id="exe" href="/exercise" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
-                    <h2 class="text-5xl">Rosca Concentrada</h2>
-                    <h3 class="text-2xl lowercase">3x12 repetições</h3>
-                </a>
-                <a id="exe2" href="/exerciseAgachamento" class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top">
-                    <h2 class="text-5xl">Agachamento Terra</h2>
-                    <h3 class="text-2xl lowercase">10 minutos</h3>
-                </a>
+                {#if exercises.length > 0}
+                    {#each exercises as exercise (exercise.id)}
+                        <ExerciseCard {exercise} />
+                    {/each}
+                {/if}
             </div>
         </div>
     </main>
 </section>
-
-<style>
-    #exe {
-        background-image: url('../../images/exe.png');
-    }
-
-    #exe2 {
-        background-image: url('../../images/exe2.png');
-    }
-</style>
