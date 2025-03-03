@@ -12,7 +12,7 @@
 
     async function fetchExercises(userId) {
         try {
-            const response = await fetch(`http://localhost:5217/api/user/${aluno.id}/exercises`);
+            const response = await fetch(`http://191.252.195.85:5000/api/user/${aluno.id}/exercises`);
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }

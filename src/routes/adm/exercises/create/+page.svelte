@@ -21,7 +21,7 @@
         }
 
         try {
-            const response = await fetch('http://localhost:5217/api/exercise', {
+            const response = await fetch('http://191.252.195.85:5000/api/exercise', {
                 method: 'POST',
                 body: formData,
             });
@@ -43,7 +43,7 @@
 
     async function fetchExercises() {
         try {
-            const response = await fetch('http://localhost:5217/api/exercise');
+            const response = await fetch('http://191.252.195.85:5000/api/exercise');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
@@ -62,7 +62,7 @@
 <section class="w-full min-h-screen flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
     <header id="head" class="w-full">
         <div class="flex justify-between">
-            <a href="/adm/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600" aria-label="Voltar para o início">
+            <a href="/adm/exercises" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600" aria-label="Voltar para o início">
                 <IconChevronLeft color="#facc15" />
             </a>
         </div>

@@ -22,14 +22,15 @@
 
     async function fetchExercises() {
         try {
-        const response = await fetch('http://localhost:5217/api/exercise');
-        if (!response.ok) {
-            throw new Error(`Erro: ${response.statusText}`);
-        }
-        exercises = await response.json();
-        console.log(exercises);
+            const response = await fetch('http://191.252.195.85:5000/api/exercise');
+            if (!response.ok) {
+                throw new Error(`Erro: ${response.statusText}`);
+            }
+            const data = await response.json();
+            exercises = data.$values || [];
+            console.log(exercises);
         } catch (err) {
-        error = err.message;
+            error = err.message;
         }
     }
 
@@ -56,7 +57,7 @@
                 {#each exercises as exercise}
                 <a href="/adm/exercises/edit" 
                     class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"  
-                    style="background-image: url('http://localhost:5217/api/Files/{exercise.imagePath}')"
+                    style="background-image: url('http://191.252.195.85:5000/api/Files/{exercise.imagePath}')"
                     on:click={() => selectedExerciseId.set(exercise.id)}>
                     <h2 class="text-5xl">{exercise.name}</h2>
                 </a>

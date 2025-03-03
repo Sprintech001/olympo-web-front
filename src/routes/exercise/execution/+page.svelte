@@ -1,33 +1,25 @@
 <script>
-    import OlympoYellow from "../../../images/olympo-yellow.png";
     import {
-        IconBarbell,
-        IconChevronLeft,
-        IconClock,
-        IconFlame,
-        IconHeartbeat,
-        IconRun,
-        IconUser,
-        IconInputCheck,
         IconPlayerPlay,
         IconPlayerPause,
     } from "@tabler/icons-svelte";
-    import { IconLock } from "@tabler/icons-svelte";
     import { onMount } from "svelte";
-    import { exercisesStore } from "../../../services/exercisesStore"; 
 
     let video;
     let currentTime = 0;
     let isPaused = true;
-    let timer = 60; 
+    let timer = 60;
     let interval;
-    let exerciseName = "Rosca Concentrada";
+    let exercise = { id: null, name: '', description: '', imagePath: '', videoPath: '' };
 
     function togglePlayPause() {
         if (video && video.paused) {
-            video.play();
-            isPaused = false;
-            startTimer();
+            video.play().then(() => {
+                isPaused = false;
+                startTimer();
+            }).catch(error => {
+                console.error('Erro ao reproduzir o vídeo:', error);
+            });
         } else if (video) {
             video.pause();
             isPaused = true;
@@ -52,24 +44,22 @@
         }, 1000);
     }
 
-    async function fetchExercises() {
-        const response = await fetch("http://localhost:5217/api/Exercises");
-        const data = await response.json();
-        exercisesStore.set(data);
-    }
-
     onMount(() => {
         video = document.getElementById("videoPreview");
         if (video) {
             video.addEventListener("timeupdate", updateTime);
-            startTimer();
         }
-        fetchExercises();
+
+        const selectedExercise = JSON.parse(sessionStorage.getItem('selectedExercise'));
+        if (selectedExercise) {
+            exercise = selectedExercise;
+        }
     });
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start gap-4 bg-[#2c2c2c]">
     <div class="timer-container">
+        <!-- Exibição do timer -->
         <svg class="timer" viewBox="0 0 36 36">
             <path
                 class="circle-bg"
@@ -88,19 +78,25 @@
             <text x="18" y="20.35" class="percentage">{Math.floor(timer / 60)}:{Math.floor(timer % 60).toString().padStart(2, '0')}</text>
         </svg>
         <div class="exercise-name">
-            <span>{exerciseName}</span>
+            <span>{exercise.name}</span>
         </div>
     </div>
+
     <video id="videoPreview" width="320" height="240" controls>
-        <source src="http://localhost:5217/api/Files/videos/execution2.mp4" />
-        <track
-            kind="captions"
-            src="path/to/captions.vtt"
-            srclang="en"
-            label="English"
-        />
-        Seu navegador não suporta o elemento de vídeo.
+        {#if exercise.videoPath}
+            <source src={`http://191.252.195.85:5000/api/Files/${exercise.videoPath}`} />
+            <track
+                kind="captions"
+                src="path/to/captions.vtt"
+                srclang="en"
+                label="English"
+            />
+        {:else}
+            Seu navegador não suporta o elemento de vídeo.
+        {/if}
     </video>
+
+    <!-- Controles de reprodução -->
     <div class="controls">
         <div class="controls-buttons">
             <div class="info">
@@ -121,6 +117,7 @@
         </div>
     </div>
 </section>
+
 
 <style>
     section {

@@ -17,48 +17,54 @@
             date: new Date("December 17, 1995 03:24:00"),
             value: 59,
             baseline: 55,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 18, 1995 03:24:00"),
             value: 44,
             baseline: 64,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 19, 1995 03:24:00"),
             value: 90,
             baseline: 35,
+            color: "#facc15"
         },
         {
             date: new Date("December 20, 1995 03:24:00"),
             value: 36,
             baseline: 73,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 21, 1995 03:24:00"),
             value: 44,
             baseline: 34,
+            color: "#a9a9a9"
         },
         {
             date: new Date("December 22, 1995 03:24:00"),
             value: 55,
             baseline: 86,
+            color: "#a9a9a9"
         },
     ];
 
     let exercises = [];
     let error = null;
 
-    console.log(exercises);
-
     async function fetchExercises() {
         try {
-        const response = await fetch('http://localhost:5217/api/exercise');
-        if (!response.ok) {
-            throw new Error(`Erro: ${response.statusText}`);
-        }
-        exercises = await response.json();
+            const response = await fetch('http://191.252.195.85:5000/api/exercise');
+            if (!response.ok) {
+                throw new Error(`Erro: ${response.statusText}`);
+            }
+            const data = await response.json();
+            exercises = data.$values || [];
+            console.log(exercises);
         } catch (err) {
-        error = err.message;
+            error = err.message;
         }
     }
 
@@ -102,11 +108,12 @@
         <div id="desempenho" class="w-full p-4 flex flex-col gap-4 bg-[#D9D9D9] bg-opacity-10 rounded-xl">
             <h2 class="text-2xl text-white">Desempenho</h2>
             <div class="h-[200px] text-white text-2xl">
-                <BarChart {data} x="date" y="value" axis="x">
-                    <!-- <Bars style="fill: #facc15;" /> -->
-                    <!-- <Axis axis="x" labelStyle="font-size: 14px; fill: #ffffff;" /> -->
-                </BarChart>
-                
+                {#if data.length > 0}
+                    <BarChart {data} x="date" y="value" axis="x">
+                        <!-- <Bars style="fill: d => d.color;" />
+                        <Axis axis="x" labelStyle="font-size: 14px; fill: #ffffff;" /> -->
+                    </BarChart>
+                {/if}
             </div>
         </div>
 
@@ -116,9 +123,11 @@
                 <a href="/">Ver Todos</a>
             </div>
             <div class="w-full flex flex-col gap-4">
-                {#each exercises as exercise (exercise.id)}
-                    <ExerciseCard {exercise} />
-                {/each}
+                {#if exercises.length > 0}
+                    {#each exercises as exercise (exercise.id)}
+                        <ExerciseCard {exercise} />
+                    {/each}
+                {/if}
             </div>
         </div>
     </main>

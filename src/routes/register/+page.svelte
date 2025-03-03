@@ -21,7 +21,7 @@
         };
 
     try {
-        const response = await fetch('http://localhost:5217/api/user', {
+        const response = await fetch('http://191.252.195.85:5000/api/user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', 
