@@ -1,33 +1,24 @@
 <script>
     import {
-        IconFlame,
-        IconHeartbeat,
-        IconRun,
-        IconUser,
-        IconChevronLeft,
-        IconAddressBook,
-        IconCreativeCommons,
-        IconCreditCard,
-        IconInputSearch,
-        IconInnerShadowBottomRightFilled,
-        IconRowInsertBottom,
+        IconFlame, IconHeartbeat, IconRun, IconUser, IconChevronLeft, IconAddressBook, IconCreativeCommons, 
+        IconCreditCard, IconInputSearch, IconInnerShadowBottomRightFilled, IconRowInsertBottom,
     } from "@tabler/icons-svelte";
+
     import { IconLock } from "@tabler/icons-svelte";
     import { BarChart, Svg, Axis, Bars } from "layerchart";
     import { onMount } from 'svelte';
-    import { selectedExerciseId } from '../../../services/storelinks.js';
 
     let exercises = [];
     let error = null;
 
     async function fetchExercises() {
         try {
-            const response = await fetch('http://191.252.195.85:5000/api/exercise');
+            const response = await fetch('http://localhost:5000/api/exercise');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
             const data = await response.json();
-            exercises = data.$values || [];
+            exercises = [...data];
             console.log(exercises);
         } catch (err) {
             error = err.message;
@@ -57,7 +48,7 @@
                 {#each exercises as exercise}
                 <a href="/adm/exercises/edit" 
                     class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"  
-                    style="background-image: url('http://191.252.195.85:5000/api/Files/{exercise.imagePath}')"
+                    style="background-image: url('http://localhost:5000/api/Files/{exercise.imagePath}')"
                     on:click={() => selectedExerciseId.set(exercise.id)}>
                     <h2 class="text-5xl">{exercise.name}</h2>
                 </a>

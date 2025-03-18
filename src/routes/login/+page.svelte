@@ -1,8 +1,6 @@
 <script>
     import OlympoYellow from "../../images/olympo-yellow.png";
     import { IconUser, IconLock } from "@tabler/icons-svelte";
-    import { userStore } from "../../services/userStore";
-    import { get } from 'svelte/store';
 
     let email = "";
     let password = "";
@@ -17,7 +15,7 @@
 
         try {
             const response = await fetch(
-                "http://191.252.195.85:5000/api/auth/login",
+                "http://localhost:5000/api/auth/login",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -28,11 +26,8 @@
             if (response.ok) {
                 const user = await response.json();
                 if (user !== null) {
-                    userStore.login(user);
                 }
                 console.log("Login realizado com sucesso!");
-
-                const userType = get(userStore).type;
 
                 // switch (userType) {
                 //     case 0:

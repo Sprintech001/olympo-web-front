@@ -9,12 +9,12 @@
 
     async function fetchAlunos() {
         try {
-            const response = await fetch('http://191.252.195.85:5000/api/user/type?type=2');
+            const response = await fetch('http://localhost:5000/api/user/type?type=2');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
             const data = await response.json();
-            alunos = data.$values || [];
+            alunos = [...data];
             console.log('Alunos:', alunos);
         } catch (err) {
             error = err.message;

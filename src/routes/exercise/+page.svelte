@@ -1,65 +1,55 @@
 <script>
-    import OlympoYellow from "../../images/olympo-yellow.png";
+    import { onMount } from "svelte";
+    import { selectedExerciseId, previousRoute } from "../../services/storelinks.js"; 
+    import { goto } from "$app/navigation";
+    
     import {
-    IconBarbell,
-    IconChevronLeft,
-        IconClock,
-        IconFlame,
-        IconHeartbeat,
-        IconRun,
-        IconUser,
-        IconInputCheck,
+        IconBarbell, IconChevronLeft, IconClock, IconFlame, IconHeartbeat,
+        IconRun, IconUser, IconInputCheck, IconLock
     } from "@tabler/icons-svelte";
-    import { IconLock } from "@tabler/icons-svelte";
-    import { onMount } from 'svelte';
-    import { selectedExerciseId } from '../../services/storelinks';
 
-    let exercises = [];
+    import OlympoYellow from "../../images/olympo-yellow.png";
+
     let exercise = { id: null, name: '', description: '', imagePath: '', videoPath: "" }; 
     let error = null;
-    let message = '';
-    let imagePath = null;
-    let videoPath = null;
-
-    async function fetchExercises() {
+    
+    async function fetchExercise() {
         try {
-            let exerciseId;
-            selectedExerciseId.subscribe(value => {
-                exerciseId = value;
-            });
+            const exerciseId = $selectedExerciseId;
+            if (!exerciseId) throw new Error("ID do exercício não encontrado");
 
-            if (!exerciseId) {
-                throw new Error('ID do exercício não encontrado');
-            }
+            const response = await fetch(`http://localhost:5000/api/exercise/${exerciseId}`);
+            if (!response.ok) throw new Error(`Erro: ${response.statusText}`);
 
-            const response = await fetch(`http://191.252.195.85:5000/api/exercise/${exerciseId}`);
-            if (!response.ok) {
-                throw new Error(`Erro: ${response.statusText}`);
-            }
             exercise = await response.json();
-            console.log(exercise);
         } catch (err) {
             error = err.message;
         }
     }
 
-    onMount(() => {
-        fetchExercises();
-    });
-    
+    function goBack() {
+        const previousRoute = sessionStorage.getItem("previousRoute");
+        goto(previousRoute);
+    }    
+
+    onMount(fetchExercise);
+
     function startExercise() {
-        sessionStorage.setItem('selectedExercise', JSON.stringify(exercise));
-        window.location.href = '/exercise/execution';
+        sessionStorage.setItem("selectedExercise", JSON.stringify(exercise));
+        goto("/exercise/execution"); 
     }
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start gap-4 bg-[#2c2c2c]">
      <div id="hero"
         class="w-full h-60 flex items-start justify-between p-4 rounded-xl bg-cover bg-top"
-        style="background-image: url('http://191.252.195.85:5000/api/Files/{exercise.imagePath}')">
-        <a href="/home" 
-            on:click={(e) => e.stopPropagation()} 
-            class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> 
+        style="background-image: url('http://localhost:5000/api/Files/{exercise.imagePath}')">
+        <a on:click={(e) => { 
+                e.stopPropagation(); 
+                goBack();
+            }} 
+            class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"
+        > 
             <IconChevronLeft color="#facc15"/> 
         </a>
     </div>
