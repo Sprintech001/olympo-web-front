@@ -12,11 +12,13 @@
 
     async function fetchExercises(userId) {
         try {
-            const response = await fetch(`http://191.252.195.85:5000/api/user/${aluno.id}/exercises`);
+            const response = await fetch(`http://localhost:5000/api/user/${aluno.id}/exercises`);
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
-            exercises = await response.json();
+            const data = await response.json();
+            exercises = [...data];
+
             console.log('Exercícios:', exercises);
         } catch (err) {
             error = err.message;
@@ -66,7 +68,7 @@
             {:else if exercises.length === 0}
                 <div class="text-gray-400">Nenhum exercício encontrado.</div>
             {:else}
-                {#each exercises.$values as exercise}
+                {#each exercises as exercise}
                     <div class="relative">
                         <ExerciseCard {exercise} />
                         <button class="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded" on:click={() => toggleOptions(exercise)}>

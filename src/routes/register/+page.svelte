@@ -2,49 +2,34 @@
     import OlympoYellow from '../../images/olympo-yellow.png';
     import { IconRecordMail, IconUser } from '@tabler/icons-svelte';
     import { IconLock } from '@tabler/icons-svelte';
+    import APIService from '../../services/APIService.js';
 
-    let error = null;
+    let message = '';
+    let name = '';
     let email = '';
     let password = '';
-    let name = '';
-    let message = '';
-    let type = '';
 
+    let api = new APIService('http://localhost:5000/api');
+    
     const handleSubmit = async (event) => {
-    event.preventDefault();
+        event.preventDefault();
+        createUser();
+    };
 
-    const data = {
-        email: email,
-        password: password,
-        name: name,
-        type: 2,
-        };
-
-    try {
-        const response = await fetch('http://191.252.195.85:5000/api/user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', 
-            },
-            body: JSON.stringify(data), 
-        });
-
-        if (response.ok) {
-            const result = await response.json();
+    async function createUser() {
+        try {
+            const data = { name: name, email: email, password: password, type: 2 };
+            const result = await api.post('/user', data);
             message = 'Usuário criado com sucesso!';
             console.log(result);
+
             setTimeout(() => {
                 window.location.href = '/login';
             }, 500);
-        } else {
-            const errorResponse = await response.json();
-            message = errorResponse.message || 'Erro ao criar usuário.';
-            console.error(errorResponse);
+        } catch (err) {
+            message = 'Erro: ' + err.message;
         }
-    } catch (err) {
-        message = 'Erro de requisição: ' + err.message;
-    }
-};
+    };
 
 </script>
 

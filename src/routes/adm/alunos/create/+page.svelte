@@ -21,7 +21,7 @@
         }
 
         try {
-            const response = await fetch('http://191.252.195.85:5000/api/aluno', {
+            const response = await fetch('http://localhost:5000/api/aluno', {
                 method: 'POST',
                 body: formData,
             });
@@ -43,7 +43,7 @@
 
     async function fetchAlunos() {
         try {
-            const response = await fetch('http://191.252.195.85:5000/api/aluno');
+            const response = await fetch('http://localhost:5000/api/aluno');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
