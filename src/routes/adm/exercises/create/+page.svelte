@@ -30,9 +30,6 @@
                 const result = await response.json();
                 message = 'Exercício criado com sucesso!';
                 console.log(result);
-                setInterval(() => {
-                    window.location.href = '/adm/exercises';
-                }, 500);
             } else {
                 message = 'Erro ao criar exercício.';
             }

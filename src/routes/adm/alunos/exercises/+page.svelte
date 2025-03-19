@@ -17,7 +17,7 @@
                 throw new Error(`Erro: ${response.statusText}`);
             }
             const data = await response.json();
-            exercises = [...data];
+            exercises = data["$values"];
 
             console.log('Exercícios:', exercises);
         } catch (err) {
