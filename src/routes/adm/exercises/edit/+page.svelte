@@ -1,10 +1,8 @@
 <script>
     import {
-        IconBarbell,
-        IconChevronLeft,
-        IconInputCheck,
-        IconFlame,
+        IconBarbell, IconChevronLeft, IconInputCheck, IconFlame,
     } from "@tabler/icons-svelte";
+    
     import { onMount } from "svelte";
     import { selectedExerciseId } from '../../../../services/storelinks.js';
 
@@ -14,7 +12,7 @@
     let message = '';
     let imagePath = null;
     let videoPath = null;
-    const serverUrl = 'http://191.252.195.85:5000';
+    const serverUrl = 'http:localhost:5000';
 
     function adjustHeight(event) {
         const textarea = event.target;
@@ -79,9 +77,6 @@
                 const result = await response.json();
                 message = 'Exercício atualizado com sucesso!';
                 console.log(result);
-                setTimeout(() => {
-                    window.location.href = '/adm/exercises';
-                }, 300);
             } else {
                 message = 'Erro ao atualizar exercício.';
                 console.log(response);

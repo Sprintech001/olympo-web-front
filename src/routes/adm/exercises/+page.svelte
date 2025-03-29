@@ -7,7 +7,9 @@
     import { IconLock } from "@tabler/icons-svelte";
     import { BarChart, Svg, Axis, Bars } from "layerchart";
     import { onMount } from 'svelte';
-
+    import { selectedExerciseId, setSelectedExercise } from '../../../services/storelinks.js';
+    
+    export let exercise;
     let exercises = [];
     let error = null;
 
@@ -18,7 +20,7 @@
                 throw new Error(`Erro: ${response.statusText}`);
             }
             const data = await response.json();
-            exercises = [...data];
+            exercises = data["$values"];
             console.log(exercises);
         } catch (err) {
             error = err.message;
@@ -33,7 +35,9 @@
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
     <div id="head" class="w-full">
         <div class="w-full flex justify-between">
-            <a href="/adm/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> <IconChevronLeft color="#facc15"/> </a>
+            <a href="/adm/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> 
+                <IconChevronLeft color="#facc15"/> 
+            </a>
         </div>
     </div>
 
@@ -49,7 +53,7 @@
                 <a href="/adm/exercises/edit" 
                     class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"  
                     style="background-image: url('http://localhost:5000/api/Files/{exercise.imagePath}')"
-                    on:click={() => selectedExerciseId.set(exercise.id)}>
+                    on:click={() => setSelectedExercise(exercise.id)}>
                     <h2 class="text-5xl">{exercise.name}</h2>
                 </a>
                 {/each}

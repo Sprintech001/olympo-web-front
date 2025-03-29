@@ -14,7 +14,7 @@
                 throw new Error(`Erro: ${response.statusText}`);
             }
             const data = await response.json();
-            alunos = [...data];
+            alunos = data["$values"];
             console.log('Alunos:', alunos);
         } catch (err) {
             error = err.message;
