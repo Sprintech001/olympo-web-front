@@ -27,6 +27,23 @@
         }
     }
 
+    const deleteExercise = async (exerciseId) => {
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/exercise/${exerciseId}`, {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao excluir exercício.");
+            }
+
+            exercises = exercises.filter(exercise => exercise.id !== exerciseId);
+        } catch (error) {
+            console.error("Erro ao excluir exercício:", error);
+        }
+    };
+
     onMount(() => {
         fetchExercises();
     });
@@ -48,14 +65,19 @@
                 <h2 class="text-4xl">Exercícios</h2>
             </div>
 
-            <div class="w-full flex flex-col gap-4">
+            <div class="w-full flex flex-col gap-0">
                 {#each exercises as exercise}
                 <a href="/adm/exercises/edit" 
                     class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"  
                     style="background-image: url('http://localhost:5000/api/Files/{exercise.imagePath}')"
                     on:click={() => setSelectedExercise(exercise.id)}>
+
                     <h2 class="text-5xl">{exercise.name}</h2>
+
                 </a>
+                <button id="lixo" type="button" on:click={() => deleteExercise(exercise.id)}>
+                    <img src="/src/images/lixeira.svg" alt="Excluir">
+                </button>
                 {/each}
             </div>
         </div>
@@ -67,3 +89,26 @@
         </a>
     </div>
 </section>
+
+<style>
+    #lixo {
+        position: relative;
+        top: -10rem;
+        right: -16.4rem;
+        background-color: #171717;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border: none;
+        cursor: pointer;
+    }
+    #lixo img {
+        position: relative;
+        left: 5px;
+        width: 24px;
+        height: 24px;
+    }
+
+</style>

@@ -28,6 +28,22 @@
         goto('/adm/alunos/exercises', { state: { aluno }, replaceState: true }); 
     }
 
+    const deleteUser = async (userId) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/user/${userId}`, {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                throw new Error("Erro ao excluir aluno.");
+            }
+
+            users = users.filter(user => user.id !== userId);
+        } catch (error) {
+            console.error("Erro ao excluir aluno:", error);
+        }
+    };
+
     onMount(fetchAlunos);
 </script>
 
@@ -53,15 +69,44 @@
                 <div class="text-gray-400">Nenhum aluno encontrado.</div>
             {:else}
                 {#each alunos as aluno}
-                    <div class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-700" style="background-color: #3f3f46;" on:click={() => handleAlunoClick(aluno)}>
+                    <div id="card" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-700" style="background-color: #3f3f46;" on:click={() => handleAlunoClick(aluno)}>
                         <img src={avatar} alt="Avatar" class="h-9 w-9 rounded-full">
                         <div>
                             <h2 class="text-2xl">{aluno.name}</h2>
                             <span class="text-lg">Visualizar plano de treinos</span>
                         </div>
                     </div>
+                    <button id="lixo" type="button" on:click={() => deleteUser(aluno.id)}>
+                        <img src="/src/images/lixeira.svg" alt="Excluir">
+                    </button>
                 {/each}
             {/if}
         </div>
     </main>
 </section>
+
+<style>
+    #card {
+        margin-bottom: -2.3rem;
+    }
+
+      #lixo {
+        position: relative;
+        top: -4rem;
+        right: -15rem;
+        background-color: #171717;
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border: none;
+        cursor: pointer;
+    }
+    #lixo img {
+        position: relative;
+        left: 5px;
+        width: 24px;
+        height: 24px;
+    }
+</style>
