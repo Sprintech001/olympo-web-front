@@ -51,7 +51,7 @@
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-8 bg-[#2c2c2c] font-karantina uppercase">
     <div id="head" class="w-full flex justify-between">
-        <a href="/adm/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600">
+        <a href="/adm/alunos/" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600">
             <IconChevronLeft color="#facc15" />
         </a>
     </div>
@@ -61,6 +61,12 @@
             {#if aluno}
                 <div class="w-full flex justify-between items-center mt-4 mb-4">
                     <h2 class="text-5xl">{aluno.name}</h2>
+                    <button href="/adm/alunos/create" class="w-28 flex items-center justify-center px-2 py-3 rounded-xl bg-[#facc15] text-black"
+                        on:click={() => { insertExercise() }}>
+
+                        
+                        <span class="text-xl ml-1">Exercício</span>
+                    </button>
                 </div>
             {/if}
 

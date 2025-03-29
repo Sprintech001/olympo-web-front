@@ -2,7 +2,7 @@
     import OlympoYellow from '../../images/olympo-yellow.png';
     import { IconRecordMail, IconUser } from '@tabler/icons-svelte';
     import { IconLock } from '@tabler/icons-svelte';
-    import APIService from '../../services/APIService.js';
+    import APIService from '/src/services/APIService.js';
 
     let message = '';
     let name = '';

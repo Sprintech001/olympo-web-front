@@ -1,49 +1,41 @@
 <script>
+    import { goto } from "$app/navigation";
     import { IconChevronLeft, IconInputCheck } from "@tabler/icons-svelte";
     import { onMount } from 'svelte';
+    import APIService from '/src/services/APIService.js';
 
-    let alunos = [];
     let error = null;
     let name = '';
-    let description = '';
-    let imagePath = null;  
+    let email = '';
+    let password = '';
     let message = '';
+
+    let api = new APIService('http://localhost:5000/api');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        createUser();
+    };
 
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('description', description);
-        
-        if (imagePath) {
-            formData.append('image', imagePath[0]);  
-        }
-
+    async function createUser() {
         try {
-            const response = await fetch('http://localhost:5000/api/aluno', {
-                method: 'POST',
-                body: formData,
-            });
+            const data = { name: name, email: email, password: password, type: 2 };
+            const result = await api.post('/user', data);
+            message = 'Usuário criado com sucesso!';
+            console.log(result);
 
-            if (response.ok) {
-                const result = await response.json();
-                message = 'aluno criado com sucesso!';
-                console.log(result);
-                setInterval(() => {
-                    window.location.href = '/adm/alunos';
-                }, 500);
-            } else {
-                message = 'Erro ao criar aluno.';
-            }
-        } catch (error) {
-            message = 'Erro de requisição: ' + error.message;
+            setTimeout(() => {
+                window.location.href = 'adm/alunos';
+            }, 500);
+        } catch (err) {
+            message = 'Erro: ' + err.message;
         }
     };
 
+
     async function fetchAlunos() {
         try {
-            const response = await fetch('http://localhost:5000/api/aluno');
+            const response = await fetch('http://localhost:5000/api/user');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
@@ -86,24 +78,23 @@
                 </div>
             
                 <div class="flex flex-col gap-2">
-                    <label for="description" class="text-2xl">Descrição</label>
-                    <textarea 
-                        bind:value={description} 
-                        id="description" 
+                    <label for="email" class="text-2xl">E-mail</label>
+                    <input 
+                        bind:value={email} 
+                        type="email"
+                        id="email" 
                         class="w-full p-4 rounded-xl bg-[#2c2c2c] text-white" 
-                        placeholder="Descreva o aluno" 
-                        rows="4" 
+                        placeholder="E-mail" 
                         required
-                    ></textarea>
+                    />
                 </div>
             
                 <div class="flex flex-col gap-2">
-                    <label for="image" class="text-2xl">Imagem</label>
+                    <label for="password" class="text-2xl">Senha</label>
                     <input 
-                        type="file" 
-                        bind:files={imagePath} 
-                        id="image" 
-                        name="imagePath" 
+                        type="password" 
+                        bind:value={password} 
+                        name="password" 
                         class="w-full p-4 rounded-xl bg-[#2c2c2c] text-white" 
                     />
                 </div>
