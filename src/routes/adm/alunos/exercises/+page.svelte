@@ -46,6 +46,7 @@
     function closeOptions() {
         selectedExercise = null;
     }
+
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-8 bg-[#2c2c2c] font-karantina uppercase">
@@ -75,7 +76,7 @@
                             Ajustar exercício
                         </button>
                         {#if selectedExercise && selectedExercise.id === exercise.id}
-                            <ShowOptions {selectedExercise} on:close={closeOptions} />
+                            <ShowOptions {selectedExercise} on:close={closeOptions} exerciseId={exercise.id} userId={aluno.id} />
                         {/if}
                     </div>
                 {/each}
