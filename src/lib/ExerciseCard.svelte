@@ -2,9 +2,12 @@
     import { selectedExerciseId, previousRoute } from '../services/storelinks.js';
     import { page } from "$app/stores";
     import { goto } from "$app/navigation";
+    import { sessionStore } from '/src/services/storelinks.js'; 
 
     export let exercise = {}; 
+    export let route = "";
     export let onExercisesCreated;
+    export let viewDelete = false;
 
     let exerciseDetails = null; 
 
@@ -36,22 +39,22 @@
         goto(newRoute);
     }
 
-    async function deleteExerciseDay(exerciseDayId) {
-        console.log('ID do exercício a ser excluído:', exerciseDayId);
+    async function deleteUserExercise(userExerciseId) {
+        console.log('ID do relacionamento User-Exercise a ser excluído:', userExerciseId);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/exerciseday/${exercise.id}`, {
-                method: 'DELETE',                          
+            const response = await fetch(`http://localhost:5000/api/userexercise/${userExerciseId}`, {
+                method: 'DELETE',
             });
 
             if (response.ok) {
-                console.log('Exercício excluído com sucesso!');
-                onExercisesCreated();
+                console.log('Relacionamento excluído com sucesso!');
+                onExercisesCreated(); 
             } else {
-                console.log('Erro ao excluir exercício.');
+                console.log('Erro ao excluir relacionamento.');
             }
         } catch (error) {
-            console.error('Erro ao excluir exercício:', error);
+            console.error('Erro ao excluir relacionamento:', error);
         }
     }
 
@@ -60,20 +63,20 @@
 <div class="w-full flex flex-col gap-4">
     <a on:click={() => { 
             navigateTo("/exercise");
-            selectedExerciseId.set(exercise.id); 
+            selectedExerciseId.set(exerciseDetails.id); 
         }}
         class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"  
         style="background-image: url('http://localhost:5000/api/Files/{exerciseDetails?.imagePath}')">
         
         {#if exerciseDetails}
             <h2 class="text-5xl">{exerciseDetails.name}</h2>
-        {:else}
-            <h2 class="text-5xl">Carregando...</h2>
         {/if}
     </a>
-    <button id="lixo" type="button" on:click={() => deleteExerciseDay(exerciseDetails.id)}>
-        <img src="/src/images/lixeira.svg" alt="Excluir">
-    </button>
+    {#if (viewDelete)}
+        <button id="lixo" type="button" on:click={() => deleteExerciseDay(exerciseDetails.id)}>
+            <img src="/src/images/lixeira.svg" alt="Excluir">
+        </button>
+    {/if}
 </div>
 
 <style>

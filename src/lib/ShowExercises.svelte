@@ -20,8 +20,7 @@
                 checked: false
             }));
 
-            const userExerciseIds = exerciseUser.map(exerciseDay => exerciseDay.exerciseId);
-
+            const userExerciseIds = exerciseUser.map(ex => ex.exerciseId);
             exercises = allExercises.filter(exercise => !userExerciseIds.includes(exercise.id));
 
         } catch (err) {
@@ -30,23 +29,22 @@
         }
     }
 
-    async function createExerciseDays() {
-        selectedExercises = exercises.filter(exercise => exercise.checked);
+    async function createUserExercises() {
+        selectedExercises = exercises.filter(ex => ex.checked);
+
         if (selectedExercises.length === 0) {
             console.log('Por favor, selecione ao menos um exercício.');
             return;
         }
 
         try {
-            const exerciseDayRequests = selectedExercises.map(exercise => {
+            const requests = selectedExercises.map(exercise => {
                 const payload = {
-                    ExerciseId: exercise.id,
-                    DayOfWeek: null,
-                    SessionId: null,
-                    UserId: userId,
+                    userId: userId,
+                    exerciseId: exercise.id
                 };
 
-                return fetch(`http://localhost:5000/api/exerciseday`, {
+                return fetch(`http://localhost:5000/api/userexercise`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -55,13 +53,11 @@
                 });
             });
 
-            await Promise.all(exerciseDayRequests);
+            await Promise.all(requests);
 
-            if (onExercisesCreated) {
-                onExercisesCreated(); 
-            }
+            if (onExercisesCreated) onExercisesCreated();
 
-            console.log('Exercícios adicionados com sucesso');
+            console.log('Exercícios adicionados com sucesso.');
         } catch (error) {
             console.error('Erro ao adicionar exercícios:', error);
         }
@@ -70,14 +66,13 @@
     $: getExercises();
 </script>
 
-
 {#if error}
     <p class="text-red-500">Erro: {error}</p>
 {/if}
 
-<form on:submit|preventDefault={createExerciseDays} class="mt-4 flex flex-col gap-4">
+<form on:submit|preventDefault={createUserExercises} class="mt-4 flex flex-col gap-4">
     <div class="flex flex-col gap-2">
-        <label>Adicionar exercicios:</label>
+        <label>Adicionar exercícios:</label>
         {#each exercises as exercise (exercise.id)}
             <label>
                 <input type="checkbox" bind:checked={exercise.checked} />
@@ -104,4 +99,3 @@
         gap: 0.5rem;
     }
 </style>
-

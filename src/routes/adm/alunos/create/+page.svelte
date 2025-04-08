@@ -7,6 +7,7 @@
     let error = null;
     let name = '';
     let email = '';
+    let type = "";
     let password = '';
     let message = '';
 
@@ -19,14 +20,11 @@
 
     async function createUser() {
         try {
-            const data = { name: name, email: email, password: password, type: 2 };
+            const data = { name: name, email: email, password: password, type: type };
+            console.log("CreateUser: ", data);
             const result = await api.post('/user', data);
             message = 'Usuário criado com sucesso!';
             console.log(result);
-
-            setTimeout(() => {
-                window.location.href = 'adm/alunos';
-            }, 500);
         } catch (err) {
             message = 'Erro: ' + err.message;
         }
@@ -87,6 +85,21 @@
                         placeholder="E-mail" 
                         required
                     />
+                </div>
+
+                <div
+                    class="flex items-center justify-start pl-4 border-2 border-white rounded-full relative"
+                >
+                    <select 
+                        bind:value={type}
+                        required
+                        class="py-3 px-4 bg-transparent font-semibold text-white outline-none rounded-full appearance-none relative z-10"
+                    >
+                        <option value="" disabled selected class="text-gray-400 bg-transparent">Tipo de usuário</option> 
+                        <option value="Aluno" class="text-black bg-transparent">Aluno</option>
+                        <option value="Professor" class="text-black bg-transparent">Professor</option>
+                        <option value="Administrador" class="text-black bg-transparent">Administrador</option>
+                    </select>
                 </div>
             
                 <div class="flex flex-col gap-2">

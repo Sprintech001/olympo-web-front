@@ -38,7 +38,7 @@
                 throw new Error("Erro ao excluir aluno.");
             }
 
-            users = users.filter(user => user.id !== userId);
+            alunos = alunos.filter(user => user.id !== userId);
         } catch (error) {
             console.error("Erro ao excluir aluno:", error);
         }
@@ -76,9 +76,9 @@
                             <span class="text-lg">Visualizar plano de treinos</span>
                         </div>
                     </div>
-                    <button id="lixo" type="button" on:click={() => deleteUser(aluno.id)}>
+                    <button id="lixo" type="button" on:click|stopPropagation={() => deleteUser(aluno.id)}>
                         <img src="/src/images/lixeira.svg" alt="Excluir">
-                    </button>
+                    </button>                    
                 {/each}
             {/if}
         </div>

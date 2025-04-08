@@ -1,45 +1,52 @@
 <script>
-    import { IconChevronLeft } from "@tabler/icons-svelte";
+    import { IconChevronLeft, IconRowInsertBottom } from "@tabler/icons-svelte";
     import avatar from "../../../../images/avatar.png";
     import { page } from '$app/stores';
     import ExerciseCard from '../../../../lib/ExerciseCard.svelte';
     import ShowOptions from '../../../../lib/ShowOptions.svelte';
     import ShowExercises from "$lib/ShowExercises.svelte";
+    import { sessionStore } from '/src/services/storelinks.js';
+    import { goto } from '$app/navigation';
+    import { onMount } from 'svelte';
 
     let aluno = null;
     let exercises = [];
     let error = null;
     let selectedExercise = null;
     let showExercise = false;
+    let uniqueExercises = [];
 
-    async function getUserExercises() {
+    async function getUserExercises(userId) {
         try {
-            const response = await fetch(`http://localhost:5000/api/exerciseday/${aluno.id}/exercises`);
-
-            if (!response.ok) {
-                throw new Error(`Erro: ${response.statusText}`);
-            }
-
+            const response = await fetch(`http://localhost:5000/api/userexercise/user/${userId}`);
+            if (!response.ok) throw new Error(`Erro: ${response.statusText}`);
             const data = await response.json();
-            exercises = data?.$values || [];  
-            console.log('Exercícios do aluno:', exercises);
+            return data["$values"] || data;
         } catch (err) {
-            error = 'Erro ao buscar exercícios: ' + err.message;
-            console.error(error);
+            console.error("Erro ao buscar exercícios do usuário:", err);
+            error = err.message;
+            return [];
         }
+    }
+
+    function getUniqueExercises(exercises) {
+        const seen = new Set();
+        return exercises.filter(ex => {
+            if (!seen.has(ex.exerciseId)) {
+                seen.add(ex.exerciseId);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    async function carregarExercicios() {
+        exercises = await getUserExercises(aluno.id);
+        uniqueExercises = getUniqueExercises(exercises);
     }
 
     function updateExercises() {
-        getUserExercises(); 
-    }
-
-    $: {
-        aluno = page?.state?.aluno || JSON.parse(sessionStorage.getItem('aluno')); 
-        console.log('Aluno recebido:', aluno);
-        if (aluno) {
-            sessionStorage.setItem('aluno', JSON.stringify(aluno));
-            getUserExercises();
-        }
+        carregarExercicios();
     }
 
     function toggleOptions(exercise) {
@@ -52,11 +59,22 @@
 
     function insertExercise() {
         showExercise = !showExercise;
-        console.log('showExercise:', showExercise); 
+        console.log('showExercise:', showExercise);
     }
 
-    $: showExercise;
+    function visualizarSessoes(exercise) {
+        sessionStore.set(exercise);
+        console.log('exercise:', exercise);
+        goto("/adm/alunos/exercises/sessions");
+    }
 
+    onMount(() => {
+        aluno = page?.state?.aluno || JSON.parse(sessionStorage.getItem('aluno'));
+        if (aluno?.id) {
+            sessionStorage.setItem('aluno', JSON.stringify(aluno));
+            carregarExercicios();
+        }
+    });
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-8 bg-[#2c2c2c] font-karantina uppercase">
@@ -85,22 +103,42 @@
 
             {#if error}
                 <div class="text-red-500">{error}</div>
-            {:else if exercises.length === 0}
+            {:else if uniqueExercises.length === 0}
                 <div class="text-gray-400">Nenhum exercício encontrado.</div>
             {:else}
-                {#each exercises as exercise}
+                {#each uniqueExercises as uniqueExercise}
                     <div class="relative">
-                        <ExerciseCard {exercise} onExercisesCreated={updateExercises} />
+                        <ExerciseCard 
+                            exercise={uniqueExercise} 
+                            onExercisesCreated={updateExercises} 
+                            route="/exercises"
+                            viewDelete={true}
+                        />
                         <button class="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded" 
-                            on:click={() => toggleOptions(exercise)} >
+                            on:click={() => toggleOptions(uniqueExercise)} >
                             Ajustar exercício
                         </button>
-                        {#if selectedExercise && selectedExercise.id === exercise.id}
-                            <ShowOptions {selectedExercise} on:close={closeOptions} exerciseId={exercise.id} userId={aluno.id} />
+                        {#if selectedExercise && selectedExercise.id === uniqueExercise.id}
+                            <ShowOptions 
+                                {selectedExercise} 
+                                on:close={closeOptions} 
+                                exerciseId={uniqueExercise.exerciseId} 
+                                userId={aluno.id} 
+                            />
                         {/if}
                     </div>
                 {/each}
             {/if}
         </div>
+
+        {#if uniqueExercises.length > 0}
+            <div>
+                <a on:click={() => visualizarSessoes(uniqueExercises[0])}
+                    class="w-full flex items-center justify-center p-4 rounded-xl bg-[#facc15] text-black cursor-pointer">
+                    <IconRowInsertBottom size="32" color="#2c2c2c" />
+                    <span class="text-2xl ml-1">Visualizar Sessões</span>
+                </a>
+            </div>
+        {/if}
     </main>
 </section>
