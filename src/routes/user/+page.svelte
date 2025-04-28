@@ -1,9 +1,10 @@
 <script>
     import OlympoYellow from "../../images/olympo-yellow.png";
-    import Avatar from '../../images/avatar.png'
+    import Avatar from '../../images/avatar.png';
+    import { userSession } from '/src/services/storelinks.js'; 
     import {
-    IconBell,
-    IconChevronLeft,
+        IconBell,
+        IconChevronLeft,
         IconChevronRight,
         IconFlame,
         IconHeartbeat,
@@ -12,7 +13,11 @@
         IconSettings,
         IconUser,
     } from "@tabler/icons-svelte";
-    import { IconLock } from "@tabler/icons-svelte";
+
+    let user;
+    $: $userSession && (user = $userSession);
+
+    console.log("Dados de userSession:", $userSession);
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
@@ -22,12 +27,21 @@
             <img src={OlympoYellow} alt="Logo Olympo" class="w-8 h-8 rounded-full" />
         </div>
         <div class="w-full flex flex-col gap-4 items-center text-center">
-            <img src={Avatar} alt="Logo Olympo" class="w-20 h-20 rounded-full" />
+            <img src={Avatar} alt="Avatar" class="w-20 h-20 rounded-full" />
             <h1 class="w-3/5 text-white text-2xl font-karantina">
-                Pedro Henrique
+                {user?.userData?.Name || "Usuário"}
             </h1>
         </div>
     </div>
+
+    <!-- <div class="w-full text-white text-sm">
+        {#if user}
+            <p>Usuário logado:</p>
+            <pre>{JSON.stringify(user, null, 2)}</pre>
+        {:else}
+            <p>Nenhum usuário logado.</p>
+        {/if}
+    </div> -->
 
     <main class="w-full flex flex-col gap-8">
         <div id="estatisticas" class="w-full flex items-center justify-between capitalize">
@@ -49,11 +63,10 @@
         </div>
 
         <div id="ajustes" class="w-full p-4 flex flex-col gap-4 bg-[#D9D9D9] bg-opacity-10 rounded-xl text-2xl text-white">
-            <a href="/" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconUser size="28" color="#facc15"/> Perfil </span> <IconChevronRight color="#facc15"/></a>
-            <a href="/" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconSettings size="28" color="#facc15"/> Configurações </span> <IconChevronRight color="#facc15"/></a>
-            <a href="/" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconBell size="28" color="#facc15"/> Notificações </span> <IconChevronRight color="#facc15"/></a>
-            <a href="/" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconHelp size="28" color="#facc15"/> Ajuda </span> <IconChevronRight color="#facc15"/></a>
+            <a href="/user/update" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconUser size="28" color="#facc15"/> Perfil </span> <IconChevronRight color="#facc15"/></a>
+            <a href="" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconSettings size="28" color="#facc15"/> Configurações </span> <IconChevronRight color="#facc15"/></a>
+            <a href="" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconBell size="28" color="#facc15"/> Notificações </span> <IconChevronRight color="#facc15"/></a>
+            <a href="" class="w-full flex items-center justify-between"><span class="flex gap-2"><IconHelp size="28" color="#facc15"/> Ajuda </span> <IconChevronRight color="#facc15"/></a>
         </div>
-
     </main>
 </section>

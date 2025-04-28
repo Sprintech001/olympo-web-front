@@ -15,6 +15,7 @@
     let selectedExercise = null;
     let showExercise = false;
     let uniqueExercises = [];
+    let showModal = false;
 
     async function getUserExercises(userId) {
         try {
@@ -68,6 +69,18 @@
         goto("/adm/alunos/exercises/sessions");
     }
 
+    function openModal(exercise) {
+        console.log('Abrindo modal para o exercício:', exercise); 
+        selectedExercise = exercise;
+        showModal = true;
+    }
+
+    function closeModal() {
+        console.log('Fechando modal'); 
+        selectedExercise = null;
+        showModal = false;
+    }
+
     onMount(() => {
         aluno = page?.state?.aluno || JSON.parse(sessionStorage.getItem('aluno'));
         if (aluno?.id) {
@@ -115,17 +128,9 @@
                             viewDelete={true}
                         />
                         <button class="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded" 
-                            on:click={() => toggleOptions(uniqueExercise)} >
+                            on:click={() => openModal(uniqueExercise)} >
                             Ajustar exercício
                         </button>
-                        {#if selectedExercise && selectedExercise.id === uniqueExercise.id}
-                            <ShowOptions 
-                                {selectedExercise} 
-                                on:close={closeOptions} 
-                                exerciseId={uniqueExercise.exerciseId} 
-                                userId={aluno.id} 
-                            />
-                        {/if}
                     </div>
                 {/each}
             {/if}
@@ -141,4 +146,58 @@
             </div>
         {/if}
     </main>
+
+    {#if showModal}
+        <div class="modal-overlay" on:click={closeModal}>
+            <div class="modal-content" on:click|stopPropagation>
+                <button class="close-button" on:click={closeModal}>X</button>
+                <ShowOptions 
+                    {selectedExercise} 
+                    on:close={closeModal} 
+                    exerciseId={selectedExercise.exerciseId} 
+                    userId={aluno.id} 
+                />
+            </div>
+        </div>
+    {/if}
 </section>
+
+<style>
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background-color: #1a1a1a;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        width: 90%;
+        max-width: 500px;
+        color: white;
+        position: relative;
+    }
+
+    .close-button {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .close-button:hover {
+        color: #facc15;
+    }
+</style>

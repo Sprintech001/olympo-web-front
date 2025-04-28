@@ -2,6 +2,8 @@
     import { onMount } from 'svelte';
     import { sessionStore } from '/src/services/storelinks.js';
     import { get } from 'svelte/store';
+    import { IconChevronLeft } from '@tabler/icons-svelte';
+    import { goto } from '$app/navigation';
 
     let userId;
     let exerciseId;
@@ -33,13 +35,15 @@
         try {
             const formData = {
                 Id: sessionData.id,
-                Repetitions: sessionData.repetitions,
-                Series: sessionData.series,
-                Breaks: sessionData.breaks,
-                Time: sessionData.time,
-                ExerciseId: sessionData.exercise?.id,
-                UserId: sessionData.user?.id
+                Repetitions: sessionData.repetitions || sessionData.repetitions,
+                Series: sessionData.series || sessionData.series,
+                Breaks: sessionData.breaks || sessionData.breaks,
+                Time: sessionData.time || sessionData.time,
+                ExerciseId: sessionData.exercise?.id || sessionData.exerciseId,
+                UserId: sessionData.user?.id || sessionData.userId
             };
+
+            console.log('Atualizando sessão com os dados:', formData);
 
             const response = await fetch(`http://localhost:5000/api/session/${sessionData.id}`, {
                 method: 'PUT',
@@ -47,8 +51,21 @@
                 body: JSON.stringify(formData),
             });
 
-            if (!response.ok) throw new Error(`Erro ao atualizar sessão ${sessionData.id}`);
-            return await response.json();
+            if (!response.ok) {
+                throw new Error(`Erro ao atualizar sessão ${sessionData.id}: ${response.statusText}`);
+            }
+
+            let updatedSession = null;
+            if (response.status !== 204) { 
+                updatedSession = await response.json();
+                console.log('Sessão atualizada com sucesso:', updatedSession);
+
+                filteredSessions = filteredSessions.map(session =>
+                    session.id === updatedSession.id ? updatedSession : session
+                );
+            } else {
+                console.log('Sessão atualizada com sucesso, mas sem corpo na resposta.');
+            }
         } catch (err) {
             console.error("Erro ao atualizar sessão:", err);
         }
@@ -56,15 +73,20 @@
 
     const deleteSession = async (sessionId) => {
         try {
+            console.log(`Tentando deletar a sessão com ID: ${sessionId}`);
             const response = await fetch(`http://localhost:5000/api/session/${sessionId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
 
-            if (!response.ok) throw new Error(`Erro ao deletar sessão ${sessionId}`);
-            filteredSessions = filteredSessions.filter(s => s.id !== sessionId);
+            if (response.ok) {
+                console.log(`Sessão com ID ${sessionId} deletada com sucesso.`);
+                filteredSessions = filteredSessions.filter(s => s.id !== sessionId);
+            } else {
+                console.error(`Erro ao deletar sessão com ID ${sessionId}: ${response.statusText}`);
+            }
         } catch (err) {
-            console.error("Erro ao deletar sessão:", err);
+            console.error(`Erro ao deletar sessão com ID ${sessionId}:`, err);
         }
     };
 
@@ -88,47 +110,57 @@
 
 </script>
 
-{#if isLoading}
-    <p>Carregando sessões...</p>
-{:else if filteredSessions.length === 0}
-    <p class="text-white">Nenhuma sessão cadastrada para este exercício.</p>
-{:else}
-    {#each filteredSessions as session}
-        <div class="flex flex-col gap-2 mb-4">
-            <h2 class="text-lg font-bold">Sessão: {session.exercise?.name || "Sem nome de exercício"}</h2>
-            <p class="text-sm text-gray-500">Preencha os campos abaixo para editar a sessão.</p>
-        </div>
+<section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-8 bg-[#2c2c2c] font-karantina uppercase">
+    <div id="head" class="w-full flex justify-between">
+        <a href="/adm/alunos/exercises" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600">
+            <IconChevronLeft color="#facc15" />
+        </a>
+    </div>
+    <main class="w-full flex flex-col gap-2">
+        {#if isLoading}
+            <p>Carregando sessões...</p>
+        {:else if filteredSessions.length === 0}
+            <p class="text-white">Nenhuma sessão cadastrada para este exercício.</p>
+        {:else}
+            {#each filteredSessions as session}
+                <div class="flex flex-col gap-2 mb-4">
+                    <h2 class="text-lg font-bold">Sessão: {session.exercise?.name || "Sem nome de exercício"}</h2>
+                    <p class="text-sm text-gray-500">Preencha os campos abaixo para editar a sessão.</p>
+                </div>
 
-        <form on:submit|preventDefault={() => updateSession(session)} class="mt-0 flex flex-col gap-4 border p-4 rounded shadow-md">
-            <input type="hidden" value={session.id} />
+                <form on:submit|preventDefault={() => updateSession(session)} class="mt-0 flex flex-col gap-4 border p-4 rounded shadow-md">
+                    <input type="hidden" value={session.id} />
 
-            <div class="flex flex-col gap-2">
-                <label>Tempo de sessões (minutos):</label>
-                <input type="number" bind:value={session.time} min="1" required class="border p-2 rounded" />
-            </div>
+                    <div class="flex flex-col gap-2">
+                        <label>Tempo de sessões (minutos):</label>
+                        <input type="number" bind:value={session.time} min="1" required class="border p-2 rounded" />
+                    </div>
 
-            <div class="flex flex-col gap-2">
-                <label>Quantidade de Séries:</label>
-                <input type="number" bind:value={session.series} min="1" required class="border p-2 rounded" />
-            </div>
+                    <div class="flex flex-col gap-2">
+                        <label>Quantidade de Séries:</label>
+                        <input type="number" bind:value={session.series} min="1" required class="border p-2 rounded" />
+                    </div>
 
-            <div class="flex flex-col gap-2">
-                <label>Quantidade de repetições:</label>
-                <input type="number" bind:value={session.repetitions} min="1" required class="border p-2 rounded" />
-            </div>
+                    <div class="flex flex-col gap-2">
+                        <label>Quantidade de repetições:</label>
+                        <input type="number" bind:value={session.repetitions} min="1" required class="border p-2 rounded" />
+                    </div>
 
-            <div class="flex flex-col gap-2">
-                <label>Tempo de intervalos (minutos):</label>
-                <input type="number" bind:value={session.breaks} min="1" required class="border p-2 rounded" />
-            </div>
+                    <div class="flex flex-col gap-2">
+                        <label>Tempo de intervalos (minutos):</label>
+                        <input type="number" bind:value={session.breaks} min="1" required class="border p-2 rounded" />
+                    </div>
 
-            <div class="flex justify-between mt-4">
-                <button type="submit" class="px-4 py-2 bg-[#facc15] text-black rounded shadow">Salvar</button>
-                <button type="button" on:click={() => deleteSession(session.id)} class="px-4 py-2 bg-red-500 text-white rounded shadow">Deletar</button>
-            </div>
-        </form>
-    {/each}
-{/if}
+                    <div class="flex justify-between mt-4">
+                        <button type="submit" class="px-4 py-2 bg-[#facc15] text-black rounded shadow">Salvar</button>
+                        <button type="button" on:click={() => deleteSession(session.id)} class="px-4 py-2 bg-red-500 text-white rounded shadow">Deletar</button>
+                    </div>
+                </form>
+            {/each}
+        {/if}
+    </main>
+</section>
+
 
 <style scoped>
     form {

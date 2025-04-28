@@ -1,15 +1,17 @@
 <script>
     import OlympoYellow from "../../../images/olympo-yellow.png";
-    import Avatar from '../../../images/avatar.png'
+    import Avatar from '../../../images/avatar.png';
     import {
         IconFlame,
         IconHeartbeat,
         IconRun,
         IconUser,
     } from "@tabler/icons-svelte";
-    import { IconLock } from "@tabler/icons-svelte";
+    import { userSession } from "../../../services/storelinks"; 
     import { BarChart, Svg, Axis, Bars } from "layerchart";
 
+    let user;  
+    $: $userSession && (user = $userSession);
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
@@ -20,7 +22,7 @@
         <a href="/user" class="w-full flex gap-4 items-center">
             <img src={Avatar} alt="Logo Olympo" class="w-20 h-20 rounded-full" />
             <h1 class="w-3/5 text-white text-2xl font-karantina">
-                Bem vindo de volta <br />Administrador
+                Bem vindo de volta <br />{user?.name || "Usuário"}
             </h1>
         </a>
     </div>

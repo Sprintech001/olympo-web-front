@@ -1,12 +1,22 @@
+import { get } from 'svelte/store';
+import { userSession } from './storelinks';
+
 export default class APIService {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
     }
 
     async request(endpoint, method = 'GET', data = null, headers = {}) {
+        const loggedUser = get(userSession);
+        const token = loggedUser?.token;
+
         const config = {
             method,
-            headers: { 'Content-Type': 'application/json', ...headers },
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token && { Authorization: `Bearer ${token}` }),
+                ...headers
+            },
             body: data ? JSON.stringify(data) : null
         };
 
