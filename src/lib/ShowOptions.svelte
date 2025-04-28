@@ -99,44 +99,70 @@
     }
 </script>
 
-<form on:submit|preventDefault={handleSubmit} class="mt-0 flex flex-col gap-4">
-    <div class="flex flex-col gap-2">
-        <label>Dias de execução:</label>
-        {#each days as day}
-            <label>
-                <input type="checkbox" bind:checked={day.checked} />
-                {day.name}
-            </label>
-        {/each}
-    </div>
+<div class="form-container">
+    <form on:submit|preventDefault={handleSubmit} class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+            <label>Dias de execução:</label>
+            <div class="checkbox-container">
+                {#each days as day}
+                    <label class="checkbox-item">
+                        <input type="checkbox" bind:checked={day.checked} />
+                        {day.name}
+                    </label>
+                {/each}
+            </div>
+        </div>
 
-    <div class="flex flex-col gap-2">
-        <label>Tempo de sessões (minutos):</label>
-        <input type="number" bind:value={sessionTime} min="1" required />
-    </div>
+        <div class="flex flex-col gap-2">
+            <label>Tempo de sessões (minutos):</label>
+            <input type="number" bind:value={sessionTime} min="1" required />
+        </div>
 
-    <div class="flex flex-col gap-2">
-        <label>Quantidade de Sessões:</label>
-        <input type="number" bind:value={session} min="1" required />
-    </div>
+        <div class="flex flex-col gap-2">
+            <label>Quantidade de Sessões:</label>
+            <input type="number" bind:value={session} min="1" required />
+        </div>
 
-    <div class="flex flex-col gap-2">
-        <label>Quantidade de repetições:</label>
-        <input type="number" bind:value={repetitions} min="1" required />
-    </div>
+        <div class="flex flex-col gap-2">
+            <label>Quantidade de repetições:</label>
+            <input type="number" bind:value={repetitions} min="1" required />
+        </div>
 
-    <div class="flex flex-col gap-2">
-        <label>Tempo de intervalos (minutos):</label>
-        <input type="number" bind:value={intervalTime} min="1" required />
-    </div>
+        <div class="flex flex-col gap-2">
+            <label>Tempo de intervalos (minutos):</label>
+            <input type="number" bind:value={intervalTime} min="1" required />
+        </div>
 
-    <button type="submit" class="px-4 py-2 bg-[#facc15] text-black rounded">Salvar</button>
-    {#if message}
-        <p class="text-white">{message}</p>
-    {/if}
-</form>
+        <button type="submit" class="px-4 py-2 bg-[#facc15] text-black rounded">Salvar</button>
+        {#if message}
+            <p class="text-white">{message}</p>
+        {/if}
+    </form>
+</div>
 
 <style>
+    .form-container {
+        background-color: #1a1a1a;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
     input[type="number"], input[type="checkbox"] {
         background-color: transparent;
         color: white;
@@ -149,9 +175,18 @@
         color: white;
     }
 
+    input[type="checkbox"]:checked {
+        background-color: #facc15;
+        border-color: #facc15;
+    }
+
     label {
         display: flex;
         align-items: center;
         gap: 0.5rem;
+    }
+
+    button {
+        cursor: pointer;
     }
 </style>

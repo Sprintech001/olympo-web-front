@@ -39,11 +39,11 @@
         goto(newRoute);
     }
 
-    async function deleteUserExercise(userExerciseId) {
-        console.log('ID do relacionamento User-Exercise a ser excluído:', userExerciseId);
+    async function deleteUserExercise(userId, exerciseId) {
+        console.log(`Tentando excluir o relacionamento User-Exercise para userId=${userId} e exerciseId=${exerciseId}`);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/userexercise/${userExerciseId}`, {
+            const response = await fetch(`http://localhost:5000/api/userexercise?userId=${userId}&exerciseId=${exerciseId}`, {
                 method: 'DELETE',
             });
 
@@ -51,7 +51,7 @@
                 console.log('Relacionamento excluído com sucesso!');
                 onExercisesCreated(); 
             } else {
-                console.log('Erro ao excluir relacionamento.');
+                console.error('Erro ao excluir relacionamento:', response.statusText);
             }
         } catch (error) {
             console.error('Erro ao excluir relacionamento:', error);
@@ -73,7 +73,7 @@
         {/if}
     </a>
     {#if (viewDelete)}
-        <button id="lixo" type="button" on:click={() => deleteExerciseDay(exerciseDetails.id)}>
+        <button id="lixo" type="button" on:click={() => deleteUserExercise(exercise.userId, exercise.exerciseId)}>
             <img src="/src/images/lixeira.svg" alt="Excluir">
         </button>
     {/if}

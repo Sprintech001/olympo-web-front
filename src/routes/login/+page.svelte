@@ -1,17 +1,15 @@
 <script>
     import OlympoYellow from "../../images/olympo-yellow.png";
     import { IconUser, IconLock } from "@tabler/icons-svelte";
+    import { setUserSession } from "../../services/storelinks"; // Importa o store para gerenciar a sessão do usuário
+    import { goto } from "$app/navigation"; // Importa o goto para redirecionamento
 
-    let email = "";
+    let username = ""; 
     let password = "";
     let error = null;
-    let userType = 2;
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        console.log("Email:", email);
-        console.log("Senha:", password);
 
         try {
             const response = await fetch(
@@ -19,35 +17,31 @@
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                },
+                    body: JSON.stringify({ username, password }),
+                }
             );
 
             if (response.ok) {
-                const user = await response.json();
-                if (user !== null) {
-                }
-                console.log("Login realizado com sucesso!");
+                const data = await response.json(); 
+                console.log("Login realizado com sucesso!", data);
 
-                // switch (userType) {
-                //     case 0:
-                //         window.location.href = "/adm/home";
-                //         break;
-                //     case 1:
-                //         window.location.href = "#";
-                //         break;
-                //     case 2:
-                //         window.location.href = "/home";
-                //         break;
-                //     default:
-                //         error = "Tipo de usuário desconhecido.";
-                //         console.log(error);
-                //         break;
-                // }
+                setUserSession({
+                    id: data.user.identityData.id,         
+                    token: data.token,
+                    userName: data.user.identityData.userName, 
+                    email: data.user.identityData.email,
+                    name: data.user.userData.name,
+                    birthDate: data.user.userData.birthDate,
+                    cpf: data.user.userData.cpf,
+                    phone: data.user.userData.phone,
+                    type: data.user.userData.type,
+                    message: data.message, 
+                    fullUserData: data.user 
+                });
 
-                window.location.href = "/home";
+                goto("/adm/home");
             } else {
-                error = "Erro ao criar exercício. Verifique suas credenciais.";
+                error = "Usuário ou senha inválidos.";
             }
         } catch (err) {
             error = "Erro de requisição: " + err.message;
@@ -74,27 +68,12 @@
         >
             <IconUser color="#facc15" />
             <input
-                type="email"
-                bind:value={email}
-                placeholder="E-mail"
+                type="text"
+                bind:value={username}
+                placeholder="Usuário"
                 class="py-3 px-4 bg-transparent font-semibold text-white outline-none rounded-full"
             />
-        </div> <!--
-        <div
-            class="flex items-center justify-start pl-4 border-2 border-white rounded-full relative"
-        >
-            <IconUser color="#facc15" />
-            <select 
-                bind:value={userType}
-                class="py-3 px-4 bg-transparent font-semibold text-white outline-none rounded-full appearance-none relative z-10"
-            >
-                 <option value="" disabled selected class="text-gray-400 bg-transparent">Tipo de usuário</option> 
-                <option value="2" class="text-black bg-transparent">Aluno</option>
-                <option value="1" class="text-black bg-transparent">Professor</option>
-                <option value="0" class="text-black bg-transparent">Administrador</option>
-            </select>
         </div>
-        -->
         <div
             class="flex items-center justify-start pl-4 border-2 border-white rounded-full"
         >
@@ -106,9 +85,14 @@
                 class="py-3 px-4 bg-transparent font-semibold text-white outline-none rounded-full"
             />
         </div>
-        <a href="/adm/home"
+        <button
             type="submit"
             class="px-4 py-3 bg-yellow-400 font-karantina w-full rounded-full tracking-wider text-3xl text-center"
-            >ENTRAR</a>
+        >
+            ENTRAR
+        </button>
+        {#if error}
+            <p class="text-red-500 font-semibold">{error}</p>
+        {/if}
     </form>
 </section>
