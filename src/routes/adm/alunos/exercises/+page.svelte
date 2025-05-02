@@ -22,6 +22,7 @@
             const response = await fetch(`http://localhost:5000/api/userexercise/user/${userId}`);
             if (!response.ok) throw new Error(`Erro: ${response.statusText}`);
             const data = await response.json();
+            console.log('data:', data);
             return data["$values"] || data;
         } catch (err) {
             console.error("Erro ao buscar exercícios do usuário:", err);
@@ -42,7 +43,7 @@
     }
 
     async function carregarExercicios() {
-        exercises = await getUserExercises(aluno.id);
+        exercises = await getUserExercises(aluno.appUser.id);
         uniqueExercises = getUniqueExercises(exercises);
     }
 
@@ -66,12 +67,14 @@
     function visualizarSessoes(exercise) {
         sessionStore.set(exercise);
         console.log('exercise:', exercise);
-        goto("/adm/alunos/exercises/sessions");
+        goto("/adm/alunos/exercises/sessions" //, { state: { userId: aluno?.appUser?.id }, replaceState: true }
+        ); 
     }
 
     function openModal(exercise) {
         console.log('Abrindo modal para o exercício:', exercise); 
         selectedExercise = exercise;
+        console.log('selectedExercise:', selectedExercise.exerciseId);
         showModal = true;
     }
 
@@ -82,12 +85,28 @@
     }
 
     onMount(() => {
-        aluno = page?.state?.aluno || JSON.parse(sessionStorage.getItem('aluno'));
-        if (aluno?.id) {
-            sessionStorage.setItem('aluno', JSON.stringify(aluno));
+        const alunoData = page?.state?.aluno || JSON.parse(sessionStorage.getItem('aluno'));
+        
+        if (alunoData?.$values) {
+            aluno = alunoData.$values[0];
+            sessionStorage.setItem('aluno', JSON.stringify({ $values: [aluno] }));
+        } else if (alunoData?.appUser) {
+            aluno = alunoData; 
+        } else {
+            console.log('Aluno não encontrado no estado ou no sessionStorage.');
+        }
+
+        const appUserId = aluno?.appUser?.id || alunoData?.$values?.[0]?.appUser?.id;
+        if (appUserId) {
+            aluno = { ...aluno, appUser: { ...aluno.appUser, id: appUserId } }; 
+            console.log('id:', aluno.appUser.id); 
             carregarExercicios();
+        } else {
+            console.error("appUser.id não encontrado.");
+            error = "Erro ao carregar dados do aluno.";
         }
     });
+
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-8 bg-[#2c2c2c] font-karantina uppercase">
@@ -101,7 +120,7 @@
         <div id="exercicios" class="w-full flex flex-col gap-4 text-white">
             {#if aluno}
                 <div class="w-full flex justify-between items-center mt-4 mb-4">
-                    <h2 class="text-5xl">{aluno.name}</h2>
+                    <h2 class="text-5xl">{aluno.userName}</h2>
                     <button 
                         class="w-28 flex items-center justify-center px-2 py-3 rounded-xl bg-[#facc15] text-black"
                         on:click={insertExercise}>
@@ -111,7 +130,7 @@
             {/if}
 
             {#if showExercise}
-                <ShowExercises userId={aluno.id} exerciseUser={exercises} onExercisesCreated={updateExercises} />
+                <ShowExercises userId={aluno.appUser.id} exerciseUser={exercises} onExercisesCreated={updateExercises} />
             {/if}
 
             {#if error}
@@ -155,7 +174,7 @@
                     {selectedExercise} 
                     on:close={closeModal} 
                     exerciseId={selectedExercise.exerciseId} 
-                    userId={aluno.id} 
+                    userId={aluno.appUser.id} 
                 />
             </div>
         </div>

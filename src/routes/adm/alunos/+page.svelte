@@ -9,7 +9,7 @@
 
     async function fetchAlunos() {
         try {
-            const response = await fetch('http://localhost:5000/api/user/type?type=2');
+            const response = await fetch('http://localhost:5000/api/auth/full-users/2');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
@@ -72,7 +72,7 @@
                     <div id="card" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-700" style="background-color: #3f3f46;" on:click={() => handleAlunoClick(aluno)}>
                         <img src={avatar} alt="Avatar" class="h-9 w-9 rounded-full">
                         <div>
-                            <h2 class="text-2xl">{aluno.name}</h2>
+                            <h2 class="text-2xl">{aluno.userName}</h2>
                             <span class="text-lg">Visualizar plano de treinos</span>
                         </div>
                     </div>

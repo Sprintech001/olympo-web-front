@@ -92,11 +92,15 @@
 
     onMount(async () => {
         const storeData = get(sessionStore);
-
         console.log('storeData:', storeData);
 
-        userId = storeData?.userId;
-        exerciseId = storeData?.exerciseId;
+        const navigationState = history.state;
+
+        console.log('storeData:', storeData);
+        console.log('navigationState:', navigationState);
+
+        userId = storeData?.userId || navigationState?.userId;
+        exerciseId = storeData?.exerciseId || navigationState?.exerciseId;
 
         if (userId && exerciseId) {
             isLoading = true;
@@ -104,7 +108,7 @@
             isLoading = false;
         } else {
             error = 'Usuário ou exercício não definidos.';
-            console.warn("userId ou exerciseId não estão disponíveis no store.");
+            console.warn("userId ou exerciseId não estão disponíveis.");
         }
     });
 
