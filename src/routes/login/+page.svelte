@@ -1,8 +1,8 @@
 <script>
     import OlympoYellow from "../../images/olympo-yellow.png";
     import { IconUser, IconLock } from "@tabler/icons-svelte";
-    import { setUserSession } from "../../services/storelinks"; // Importa o store para gerenciar a sessão do usuário
-    import { goto } from "$app/navigation"; // Importa o goto para redirecionamento
+    import { setUserSession } from "../../services/storelinks"; 
+    import { goto } from "$app/navigation"; 
 
     let username = ""; 
     let password = "";
@@ -39,7 +39,7 @@
                     fullUserData: data.user 
                 });
 
-                goto("/adm/home");
+                goto("/home");
             } else {
                 error = "Usuário ou senha inválidos.";
             }

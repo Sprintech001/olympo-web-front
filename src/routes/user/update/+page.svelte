@@ -4,23 +4,15 @@
     import { get } from 'svelte/store';
     import { goto } from '$app/navigation';
     import { IconChevronLeft } from '@tabler/icons-svelte';
+    import Avatar from '../../../images/avatar.png';
 
-    let user = {
-        cpf: '',
-        name: '',
-        email: '',
-        phone: '',
-        birthDate: '',
-        image: null,
-        imagePath: ''
-    };
+    let user = { cpf: '', name: '', email: '', phone: '', birthDate: '', image: null, imagePath: '' };
     let isLoading = false;
     let error = '';
 
     const fetchUser = async () => {
         try {
             isLoading = true;
-
             const loggedUser = get(userSession);
             if (!loggedUser || !loggedUser.token) {
                 error = 'Usuário não autenticado.';
@@ -28,14 +20,9 @@
                 return;
             }
 
-            user = {
-                cpf: loggedUser.cpf || '',
-                name: loggedUser.name || 'Nome não disponível',
-                email: loggedUser.email || '',
-                phone: loggedUser.phone || '',
-                birthDate: loggedUser.birthDate || '',
-                // imagePath: loggedUser.fullUserData?.imagePath ? `http://localhost:5000/${loggedUser.fullUserData.imagePath}` : ''
-            };
+            user = loggedUser;
+            console.log('01 - Dados  do usuário  logado:', user.fullUserData.userData.id);
+
         } catch (err) {
             console.error(err);
             error = 'Erro ao carregar informações do usuário.';
@@ -44,10 +31,35 @@
         }
     };
 
+    const uploadImage = async (imageFile) => {
+        const loggedUser = get(userSession);
+        const formData = new FormData();
+        formData.append('file', imageFile);
+
+        const uploadResponse = await fetch('http://localhost:5000/api/user/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${loggedUser.token}`
+            },
+            body: formData
+        });
+
+        if (!uploadResponse.ok) {
+            throw new Error('Erro ao fazer upload da imagem.');
+        }
+
+        const uploadResult = await uploadResponse.json();
+        return uploadResult.filePath; 
+    };
+
     const updateUser = async () => {
         try {
-            isLoading = true;
+            if (!user.name || !user.email || !user.cpf) {
+                error = 'Por favor, preencha todos os campos obrigatórios.';
+                return;
+            }
 
+            isLoading = true;
             const loggedUser = get(userSession);
             if (!loggedUser || !loggedUser.token) {
                 error = 'Usuário não autenticado.';
@@ -55,38 +67,54 @@
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('cpf', user.cpf);
-            formData.append('name', user.name);
-            formData.append('email', user.email);
-            formData.append('phone', user.phone);
-
-            const formattedBirthDate = user.birthDate ? new Date(user.birthDate).toISOString().split('T')[0] : '';
-            formData.append('birthDate', formattedBirthDate);
-
+            // Upload da imagem, se houver
             if (user.image) {
-                formData.append('image', user.image);
+                const uploadedPath = await uploadImage(user.image);
+                user.imagePath = uploadedPath;
             }
 
-            console.log("Token enviado no cabeçalho:", loggedUser.token);
+            const userUpdatePayload = { 
+                identityId: loggedUser.id, 
+                userName: user.name, 
+                email: user.email,
+                password: user.password || null, 
+                cpf: user.cpf,
+                phone: user.phone,
+                birthDate: user.birthDate 
+                    ? new Date(user.birthDate).toISOString().split('T')[0] 
+                    : null,
+                imagePath: user.imagePath || null  
+            };
 
-            const response = await fetch(`http://localhost:5000/api/auth/update/${loggedUser.id}`, { 
+            const userResponse = await fetch(`http://localhost:5000/api/auth/update/${user.fullUserData.userData.id}`, { 
                 method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${loggedUser.token}`
+                headers: 
+                {
+                    'Authorization': `Bearer ${loggedUser.token}`,
+                    'Content-Type': 'application/json'
                 }, 
-                body: formData
+                body: JSON.stringify(userUpdatePayload)
             });
 
-            if (!response.ok) throw new Error('Erro ao atualizar informações do usuário.');
+            if (!userResponse.ok) throw new Error('Erro ao atualizar informações do usuário.');
 
             alert('Informações atualizadas com sucesso!');
             fetchUser(); 
+
         } catch (err) {
             console.error(err);
-            error = 'Erro ao atualizar informações do usuário.';
+            error = err.message || 'Erro ao atualizar informações do usuário.';
         } finally {
             isLoading = false;
+        }
+    };
+
+    $: user;
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            user.image = file;
         }
     };
 
@@ -97,16 +125,19 @@
     <div class="w-full flex justify-between">
         <a href="/user" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600"> <IconChevronLeft color="#facc15"/> </a>
     </div>
-    <h1 class="text-2xl text-white">Atualizar Informações</h1>
 
-    {#if user.imagePath}
-        <img src={user.imagePath} alt="Imagem do usuário" class="w-32 h-32 rounded-full object-cover border-2 border-yellow-400" />
-    {/if}
+    <div class="w-full flex flex-col gap-4 items-center text-center">
+        <img src={Avatar} alt="Avatar" class="w-20 h-20 rounded-full" />
+        <h1 class="w-3/5 text-white text-2xl font-karantina">
+            {user?.name || "Usuário"}
+        </h1>
+        <h1 class="text-2xl text-white">Atualizar Informações</h1>
+    </div>
 
     {#if isLoading}
         <p>Carregando...</p>
     {:else}
-        <form on:submit|preventDefault={updateUser} class="w-full max-w-md flex flex-col gap-4 bg-gray-800 p-6 rounded shadow-md">
+        <form on:submit|preventDefault={updateUser} class="w-full max-w-md flex flex-col gap-3 bg-gray-800 p-6 rounded shadow-md">
             <div class="flex flex-col gap-2">
                 <label for="cpf" class="text-white">CPF:</label>
                 <input id="cpf" type="text" bind:value={user.cpf} class="p-2 rounded border" />
@@ -133,9 +164,14 @@
             </div>
 
             <div class="flex flex-col gap-2">
-                <label for="image" class="text-white">Imagem:</label>
-                <input id="image" type="file" accept="image/*" on:change={(e) => user.imagePath = e.target.files[0]} class="p-2 rounded border" />
+                <label for="password" class="text-white">Senha:</label>
+                <input id="password" type="password" bind:value={user.password} class="p-2 rounded border" />
             </div>
+
+            <div class="flex flex-col gap-2">
+                <label for="image" class="text-white">Imagem:</label>
+                <input id="image" type="file" accept="image/*" on:change={handleImageChange} class="p-2 rounded border" />
+            </div>            
 
             {#if error}
                 <p class="text-red-500">{error}</p>
@@ -176,4 +212,3 @@
         margin-bottom: 20px;
     }
 </style>
-
