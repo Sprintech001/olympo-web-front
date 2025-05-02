@@ -27,7 +27,7 @@
             <img src={OlympoYellow} alt="Logo Olympo" class="w-8 h-8 rounded-full" />
         </div>
         <div class="w-full flex flex-col gap-4 items-center text-center">
-            <img src={Avatar} alt="Avatar" class="w-20 h-20 rounded-full" />
+            <img src={user.imagePath ? `http://localhost:5000/api/Files/${user.imagePath}` : Avatar}  alt="Avatar" class="w-20 h-20 rounded-full" />
             <h1 class="w-3/5 text-white text-2xl font-karantina">
                 {user?.userData?.Name || "Usuário"}
             </h1>

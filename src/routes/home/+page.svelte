@@ -77,7 +77,7 @@
             <img src={OlympoYellow} alt="Logo Olympo" class="w-6 rounded-full" />
         </div>
         <a href="/user" class="w-full flex gap-4 items-center">
-            <img src={Avatar} alt="Logo Olympo" class="w-20 h-20 rounded-full" />
+            <img src={user.imagePath ? `http://localhost:5000/api/Files/${user.imagePath}` : Avatar}  alt="Logo Olympo" class="w-20 h-20 rounded-full" />
             <h1 class="w-3/5 text-white text-2xl font-karantina">
                 Bem vindo de volta <br />{user?.userName || "Usuário"}
             </h1>

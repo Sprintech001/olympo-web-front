@@ -10,6 +10,11 @@
     let isLoading = false;
     let error = '';
 
+    const formatDate = (isoDate) => {
+        if (!isoDate) return '';
+        return isoDate.split('T')[0]; // Extrai apenas a parte da data (YYYY-MM-DD)
+    };
+
     const fetchUser = async () => {
         try {
             isLoading = true;
@@ -21,7 +26,7 @@
             }
 
             user = loggedUser;
-            console.log('01 - Dados  do usuário  logado:', user.fullUserData.userData.id);
+            user.birthDate = formatDate(user.fullUserData.userData.birthDate); 
 
         } catch (err) {
             console.error(err);
@@ -67,7 +72,6 @@
                 return;
             }
 
-            // Upload da imagem, se houver
             if (user.image) {
                 const uploadedPath = await uploadImage(user.image);
                 user.imagePath = uploadedPath;
@@ -98,7 +102,7 @@
 
             if (!userResponse.ok) throw new Error('Erro ao atualizar informações do usuário.');
 
-            alert('Informações atualizadas com sucesso!');
+            console.log('Informações atualizadas com sucesso!');
             fetchUser(); 
 
         } catch (err) {
@@ -118,6 +122,24 @@
         }
     };
 
+    const handleImageClick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (event) => {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                user.image = files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    user.imagePath = e.target.result; 
+                };
+                reader.readAsDataURL(user.image);
+            }
+        };
+        input.click();
+    };
+
     onMount(fetchUser);
 </script>
 
@@ -127,7 +149,12 @@
     </div>
 
     <div class="w-full flex flex-col gap-4 items-center text-center">
-        <img src={Avatar} alt="Avatar" class="w-20 h-20 rounded-full" />
+        <img 
+            src={user.imagePath ? `http://localhost:5000/api/Files/${user.imagePath}` : Avatar} 
+            alt="Avatar" 
+            class="w-20 h-20 rounded-full cursor-pointer" 
+            on:click={handleImageClick} 
+        />
         <h1 class="w-3/5 text-white text-2xl font-karantina">
             {user?.name || "Usuário"}
         </h1>
@@ -210,5 +237,9 @@
 
     img {
         margin-bottom: 20px;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
     }
 </style>
