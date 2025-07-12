@@ -13,7 +13,7 @@
 
         try {
             const response = await fetch(
-                "http://localhost:5000/api/auth/login",
+                "http://191.252.195.85:5001/api/auth/login",
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -39,7 +39,16 @@
                     fullUserData: data.user 
                 });
 
-                goto("/home");
+                if (data.user.userData.type === "Administrador") {
+                    goto("/adm/home");
+                    return;
+                } else if (data.user.userData.type === "Professor") {
+                    goto("/adm/home");
+                    return;
+                } else if (data.user.userData.type === "Aluno") {
+                    goto("/home");
+                    return;
+                }
             } else {
                 error = "Usuário ou senha inválidos.";
             }

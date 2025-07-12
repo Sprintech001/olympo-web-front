@@ -1,17 +1,25 @@
 <script>
+      import { onMount } from 'svelte';
     import OlympoYellow from "../../../images/olympo-yellow.png";
     import Avatar from '../../../images/avatar.png';
-    import {
-        IconFlame,
-        IconHeartbeat,
-        IconRun,
-        IconUser,
-    } from "@tabler/icons-svelte";
+    import { IconFlame, IconHeartbeat, IconRun } from "@tabler/icons-svelte";
     import { userSession } from "../../../services/storelinks"; 
-    import { BarChart, Svg, Axis, Bars } from "layerchart";
+    import { goto } from "$app/navigation";
+    import { page } from "$app/stores";
 
     let user;  
     $: $userSession && (user = $userSession);
+
+    onMount(() => {
+        sessionStorage.setItem('previousRoute', $page.url.pathname);
+    });
+
+    function navigateTo(newRoute) {
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem("previousRoute", $page.url.pathname);
+        }
+        goto(newRoute);
+    }
 </script>
 
 <section class="w-full min-h-dvh flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
@@ -19,7 +27,11 @@
         <div class="w-full flex justify-end">
             <img src={OlympoYellow} alt="Logo Olympo" class="w-6 rounded-full" />
         </div>
-        <a href="/user" class="w-full flex gap-4 items-center">
+        <a 
+            on:click={() => {
+                navigateTo("/user");
+            }}
+        class="w-full flex gap-4 items-center">
             <img src={Avatar} alt="Logo Olympo" class="w-20 h-20 rounded-full" />
             <h1 class="w-3/5 text-white text-2xl font-karantina">
                 Bem vindo de volta <br />{user?.name || "Usuário"}

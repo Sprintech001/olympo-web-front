@@ -9,12 +9,12 @@
 
     async function fetchAlunos() {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/full-users/2');
+            const response = await fetch('http://191.252.195.85:5001/api/auth/full-users/2');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
             const data = await response.json();
-            alunos = data["$values"];
+            alunos = data;
             console.log('Alunos:', alunos);
         } catch (err) {
             error = err.message;
@@ -28,9 +28,10 @@
         goto('/adm/alunos/exercises', { state: { aluno }, replaceState: true }); 
     }
 
-    const deleteUser = async (userId) => {
+    const deleteUser = async (userId) => {  
+        console.log("Excluindo usuário com ID:", userId);
         try {
-            const response = await fetch(`http://localhost:5000/api/user/${userId}`, {
+            const response = await fetch(`http://191.252.195.85:5001/api/user/${userId}`, {
                 method: "DELETE",
             });
 
@@ -72,11 +73,11 @@
                     <div id="card" class="w-full h-28 flex items-center p-4 gap-4 rounded-xl bg-zinc-700" style="background-color: #3f3f46;" on:click={() => handleAlunoClick(aluno)}>
                         <img src={avatar} alt="Avatar" class="h-9 w-9 rounded-full">
                         <div>
-                            <h2 class="text-2xl">{aluno.userName}</h2>
+                            <h2 class="text-2xl">{aluno.appUser.name}</h2>
                             <span class="text-lg">Visualizar plano de treinos</span>
                         </div>
                     </div>
-                    <button id="lixo" type="button" on:click|stopPropagation={() => deleteUser(aluno.id)}>
+                    <button id="lixo" type="button" on:click|stopPropagation={() => deleteUser(aluno.appUser.id)}>
                         <img src="/src/images/lixeira.svg" alt="Excluir">
                     </button>                    
                 {/each}

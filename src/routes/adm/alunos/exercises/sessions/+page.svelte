@@ -13,9 +13,19 @@
     let emptyMessage = '';
     let exercises = [];
 
+    const dayNames = {
+        0: 'Domingo',
+        1: 'Segunda-feira',
+        2: 'Terça-feira',
+        3: 'Quarta-feira',
+        4: 'Quinta-feira',
+        5: 'Sexta-feira',
+        6: 'Sábado',
+    };
+
     const getSessionsByUserAndExercise = async (userId, exerciseId) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/userexercise/sessions?userId=${userId}&exerciseId=${exerciseId}`);
+            const response = await fetch(`http://191.252.195.85:5001/api/userexercise/sessions?userId=${userId}&exerciseId=${exerciseId}`);
 
             if (!response.ok) {
                 if (response.status === 404) return [];
@@ -23,7 +33,7 @@
             }
 
             const data = await response.json();
-            return data?.$values ?? [];
+            return data ?? [];
         } catch (err) {
             console.error("Erro ao buscar sessões específicas:", err);
             error = "Erro ao carregar sessões.";
@@ -45,7 +55,7 @@
 
             console.log('Atualizando sessão com os dados:', formData);
 
-            const response = await fetch(`http://localhost:5000/api/session/${sessionData.id}`, {
+            const response = await fetch(`http://191.252.195.85:5001/api/session/${sessionData.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -74,7 +84,7 @@
     const deleteSession = async (sessionId) => {
         try {
             console.log(`Tentando deletar a sessão com ID: ${sessionId}`);
-            const response = await fetch(`http://localhost:5000/api/session/${sessionId}`, {
+            const response = await fetch(`http://191.252.195.85:5001/api/session/${sessionId}`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -127,12 +137,12 @@
             <p class="text-white">Nenhuma sessão cadastrada para este exercício.</p>
         {:else}
             {#each filteredSessions as session}
-                <div class="flex flex-col gap-2 mb-4">
-                    <h2 class="text-lg font-bold">Sessão: {session.exercise?.name || "Sem nome de exercício"}</h2>
+                <div class="flex flex-col gap-2 mb-4 ">
+                    <h2 class="text-lg font-bold">Sessão: {session.exercise?.name || "Sem nome de exercício"} - {dayNames[session.day] ?? " "}</h2>
                     <p class="text-sm text-gray-500">Preencha os campos abaixo para editar a sessão.</p>
                 </div>
 
-                <form on:submit|preventDefault={() => updateSession(session)} class="mt-0 flex flex-col gap-4 border p-4 rounded shadow-md">
+                <form on:submit|preventDefault={() => updateSession(session)} class="mt-0 flex flex-col gap-4 border p-4 rounded shadow-md mb-4">
                     <input type="hidden" value={session.id} />
 
                     <div class="flex flex-col gap-2">
