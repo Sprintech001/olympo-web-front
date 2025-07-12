@@ -18,7 +18,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
-		"@tabler/icons-svelte": "^3.26.0",
+		"@tabler/icons-svelte": "^3.34.0",
 		"layerchart": "^0.60.2"
 	},
 	"engines": {

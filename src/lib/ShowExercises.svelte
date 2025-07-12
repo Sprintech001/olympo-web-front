@@ -9,7 +9,7 @@
 
     async function getExercises() {
         try {
-            const response = await fetch(`http://localhost:5000/api/exercise`);
+            const response = await fetch(`http://191.252.195.85:5001/api/exercise`);
             if (!response.ok) {
                 throw new Error(`Erro ao buscar exercícios: ${response.statusText}`);
             }
@@ -24,7 +24,7 @@
             exercises = allExercises.filter(exercise => !userExerciseIds.includes(exercise.id));
 
         } catch (err) {
-            error = err.message;
+            // error = err.message;
             console.error('Erro ao buscar exercícios:', error);
         }
     }
@@ -44,7 +44,7 @@
                     exerciseId: exercise.id
                 };
 
-                return fetch(`http://localhost:5000/api/userexercise`, {
+                return fetch(`http://191.252.195.85:5001/api/userexercise`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

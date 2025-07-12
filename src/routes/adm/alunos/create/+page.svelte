@@ -11,7 +11,7 @@
     let password = '';
     let message = '';
 
-    let api = new APIService('http://localhost:5000/api');
+    let api = new APIService('http://191.252.195.85:5001/api/auth');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,9 +20,9 @@
 
     async function createUser() {
         try {
-            const data = { name: name, email: email, password: password, type: type };
+            const data = { username: name, email: email, password: password, type: type };
             console.log("CreateUser: ", data);
-            const result = await api.post('/user', data);
+            const result = await api.post('/register', data);
             message = 'Usuário criado com sucesso!';
             console.log(result);
         } catch (err) {
@@ -33,7 +33,7 @@
 
     async function fetchAlunos() {
         try {
-            const response = await fetch('http://localhost:5000/api/user');
+            const response = await fetch('http://191.252.195.85:5001/api/auth/full-users/2');
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
             }
@@ -52,7 +52,7 @@
 <section class="w-full min-h-screen flex flex-col items-start py-4 px-8 gap-4 bg-[#2c2c2c] font-karantina uppercase">
     <header id="head" class="w-full">
         <div class="flex justify-between">
-            <a href="/adm/home" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600" aria-label="Voltar para o início">
+            <a href="/adm/alunos" class="bg-[#2c2c2c] p-2 rounded-full border border-zinc-600" aria-label="Voltar para o início">
                 <IconChevronLeft color="#facc15" />
             </a>
         </div>
@@ -60,11 +60,11 @@
 
     <main class="w-full flex flex-col gap-8">
         <div id="exercicios" class="w-full text-white">
-            <h2 class="text-4xl mt-4 mb-4">Adicionar Alunos</h2>
+            <h2 class="text-4xl mt-4 mb-4">Adicionar Usuário</h2>
 
             <form on:submit={handleSubmit} class="flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
-                    <label for="name" class="text-2xl">Nome do aluno</label>
+                    <label for="name" class="text-2xl">Nome do Usuário</label>
                     <input 
                         type="text" 
                         bind:value={name} 
@@ -96,9 +96,9 @@
                         class="py-3 px-4 bg-transparent font-semibold text-white outline-none rounded-full appearance-none relative z-10"
                     >
                         <option value="" disabled selected class="text-gray-400 bg-transparent">Tipo de usuário</option> 
-                        <option value="Aluno" class="text-black bg-transparent">Aluno</option>
-                        <option value="Professor" class="text-black bg-transparent">Professor</option>
-                        <option value="Administrador" class="text-black bg-transparent">Administrador</option>
+                        <option value=2 class="text-black bg-transparent">Aluno</option>
+                        <option value=1 class="text-black bg-transparent">Professor</option>
+                        <option value=0 class="text-black bg-transparent">Administrador</option>
                     </select>
                 </div>
             

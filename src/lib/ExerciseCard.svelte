@@ -13,7 +13,7 @@
 
     async function getExerciseById(exerciseId) {
         try {
-            const response = await fetch(`http://localhost:5000/api/exercise/${exerciseId}`);
+            const response = await fetch(`http://191.252.195.85:5001/api/exercise/${exerciseId}`);
 
             if (!response.ok) {
                 throw new Error(`Erro: ${response.statusText}`);
@@ -43,7 +43,7 @@
         console.log(`Tentando excluir o relacionamento User-Exercise para userId=${userId} e exerciseId=${exerciseId}`);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/userexercise?userId=${userId}&exerciseId=${exerciseId}`, {
+            const response = await fetch(`http://191.252.195.85:5001/api/userexercise?userId=${userId}&exerciseId=${exerciseId}`, {
                 method: 'DELETE',
             });
 
@@ -61,17 +61,24 @@
 </script>
 
 <div class="w-full flex flex-col gap-4">
-    <a on:click={() => { 
-            navigateTo("/exercise");
-            selectedExerciseId.set(exerciseDetails.id); 
-        }}
-        class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"  
-        style="background-image: url('http://localhost:5000/api/Files/{exerciseDetails?.imagePath}')">
-        
-        {#if exerciseDetails}
+    {#if exerciseDetails}
+        <a
+            on:click={() => {
+                navigateTo("/exercise");
+                selectedExerciseId.set(exerciseDetails.id);
+            }}
+            class="w-full h-44 flex flex-col items-start justify-center p-4 rounded-xl bg-cover bg-top"
+            style={`background-image: url('http://191.252.195.85:5001/api/Files/${exerciseDetails.imagePath}')`}
+        >
             <h2 class="text-5xl">{exerciseDetails.name}</h2>
-        {/if}
-    </a>
+        </a>
+    {:else}
+        <div class="w-full h-44 flex items-center justify-center bg-gray-200 rounded-xl animate-pulse">
+            <span class="text-gray-500">Carregando exercício...</span>
+        </div>
+    {/if}
+
+
     {#if (viewDelete)}
         <button id="lixo" type="button" on:click={() => deleteUserExercise(exercise.userId, exercise.exerciseId)}>
             <img src="/src/images/lixeira.svg" alt="Excluir">
